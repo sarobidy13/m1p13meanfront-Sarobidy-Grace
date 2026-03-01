@@ -18,4 +18,7 @@ export class ArticleService {
   }
   getMouvements(id: string): Observable<any> { return this.http.get(`${this.API}/mouvements/${id}`); }
   getHistoriquePrix(id: string): Observable<any> { return this.http.get(`${this.API}/historique-prix/${id}`); }
+  uploadImage(formData: FormData) {
+    return this.http.post<{url: string}>(`${this.API}/upload`, formData);
+  }
 }

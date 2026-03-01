@@ -1,9 +1,29 @@
 <nb-card>
-  <nb-card-header>
-    <h5 class="mb-0" style="color: #8b8b89;">
+  <nb-card-header class="d-flex align-items-center">
+
+    <!-- Logo cliquable -->
+    <div (click)="fileInput.click()" style="cursor: pointer; position: relative; margin-right: 12px;">
+
+      <img
+        [src]="logoPreview || ''"
+        alt="Logo"
+        style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover; border: 2px dashed #ccc;">
+
+      <!-- Icone crayon par dessus -->
+      <nb-icon
+        icon="edit-2-outline"
+        style="position: absolute; bottom: 0; right: 0; background: white; border-radius: 50%; padding: 2px; font-size: 14px; color: #8b8b89;">
+      </nb-icon>
+    </div>
+
+    <!-- Input caché -->
+    <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput style="display: none;">
+
+    <h5 class="mb-0" style="color: #8b8b89; display: flex; align-items: center;">
       <nb-icon icon="shopping-bag-outline" style="margin-right: 8px;"></nb-icon>
       {{ isEditMode ? 'Modifier la Boutique' : 'Ajouter une Boutique' }}
     </h5>
+
   </nb-card-header>
 
   <nb-card-body>

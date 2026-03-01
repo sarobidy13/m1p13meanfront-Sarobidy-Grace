@@ -25,6 +25,8 @@ export class FormBoutiqueComponent implements OnInit {
   loading = false;
   message = '';
   messageType = '';
+  logoPreview: string = '';
+  selectedFile: File | null = null;
 
   constructor(
     private boutiqueService: BoutiqueService,
@@ -53,12 +55,46 @@ export class FormBoutiqueComponent implements OnInit {
       next: (res) => {
         this.boutique = res.data;
         this.boutique.idCategorie = res.data.idCategorie?._id;
+        if (res.data.logo) this.logoPreview = 'http://localhost:3000' + res.data.logo;
       },
     });
   }
 
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.selectedFile = file;
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => this.logoPreview = e.target.result;
+    reader.readAsDataURL(file);
+  }
+
   save(): void {
     this.loading = true;
+
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('image', this.selectedFile);
+
+      this.boutiqueService.uploadImage(formData).subscribe({
+        next: (res) => {
+          this.boutique.logo = res.url;
+          this.saveBoutique();
+        },
+        error: () => {
+          this.message = "Erreur upload image";
+          this.messageType = 'danger';
+          this.loading = false;
+        }
+      });
+    } else {
+      this.saveBoutique();
+    }
+  }
+
+  private saveBoutique(): void {
     const action = this.isEditMode
       ? this.boutiqueService.update(this.boutiqueId, this.boutique)
       : this.boutiqueService.create(this.boutique);
@@ -74,7 +110,7 @@ export class FormBoutiqueComponent implements OnInit {
         this.loading = false;
         this.message = err.error?.error || 'Erreur lors de la sauvegarde';
         this.messageType = 'danger';
-      },
+      }
     });
   }
 

@@ -1,26 +1,59 @@
 <nb-card>
   <nb-card-header>
-    <h5 class="mb-0" style="color:#8b8b89;"><nb-icon icon="archive-outline" style="margin-right:8px;"></nb-icon>{{ isEditMode ? 'Modifier Article' : 'Ajouter un Article' }}</h5>
+    <h5 class="mb-0" style="color:#8b8b89;">
+      <nb-icon icon="archive-outline" style="margin-right:8px;"></nb-icon>
+      {{ isEditMode ? 'Modifier Article' : 'Ajouter un Article' }}
+    </h5>
   </nb-card-header>
   <nb-card-body>
     <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message=''">{{ message }}</nb-alert>
     <form (ngSubmit)="save()">
-      <div class="row">
-        <div class="col-md-6">
+
+      <!-- Image + Nom + Description côte à côte -->
+      <div class="d-flex align-items-center mb-4" style="gap: 24px;">
+
+        <!-- Image cliquable -->
+        <div (click)="fileInput.click()" style="cursor: pointer; position: relative; flex-shrink: 0;">
+          <img *ngIf="imagePreview"
+               [src]="imagePreview"
+               style="width: 120px; height: 120px; border-radius: 12px; object-fit: cover; border: 2px dashed #ccc;">
+          <div *ngIf="!imagePreview"
+               style="width: 120px; height: 120px; border-radius: 12px;
+                      border: 2px dashed #ccc; display: flex; flex-direction: column;
+                      align-items: center; justify-content: center; color: #8f9bb3;">
+            <nb-icon icon="image-outline" style="font-size: 2rem;"></nb-icon>
+            <small>Ajouter image</small>
+          </div>
+          <nb-icon icon="edit-2-outline"
+                   style="position: absolute; bottom: 4px; right: 4px;
+                          background: white; border-radius: 50%; padding: 2px;
+                          font-size: 14px; color: #8b8b89;">
+          </nb-icon>
+        </div>
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput style="display: none;">
+
+        <!-- Nom + Description à droite de l'image -->
+        <div style="flex: 1;">
           <div class="form-group mb-3">
             <label class="label">Nom *</label>
             <input nbInput fullWidth [(ngModel)]="article.nom" name="nom" placeholder="Nom de l'article" required>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group mb-3">
-            <label class="label">Boutique *</label>
-            <nb-select fullWidth [(ngModel)]="article.idBoutique" name="idBoutique" placeholder="Choisir" required [disabled]="isEditMode">
-              <nb-option *ngFor="let b of boutiques" [value]="b._id">{{ b.nom }}</nb-option>
-            </nb-select>
+          <div class="form-group mb-0">
+            <label class="label">Description</label>
+            <textarea nbInput fullWidth [(ngModel)]="article.description" name="description" placeholder="Description" rows="3"></textarea>
           </div>
         </div>
+
       </div>
+
+      <!-- Boutique -->
+      <div class="form-group mb-3">
+        <label class="label">Boutique *</label>
+        <nb-select fullWidth [(ngModel)]="article.idBoutique" name="idBoutique" placeholder="Choisir" required [disabled]="isEditMode">
+          <nb-option *ngFor="let b of boutiques" [value]="b._id">{{ b.nom }}</nb-option>
+        </nb-select>
+      </div>
+
       <div class="row">
         <div class="col-md-4">
           <div class="form-group mb-3">
@@ -41,16 +74,11 @@
           </div>
         </div>
       </div>
-      <div class="form-group mb-3">
-        <label class="label">Description</label>
-        <textarea nbInput fullWidth [(ngModel)]="article.description" name="description" placeholder="Description" rows="3"></textarea>
-      </div>
-      <div class="form-group mb-3">
-        <label class="label">Image URL</label>
-        <input nbInput fullWidth [(ngModel)]="article.image" name="image" placeholder="https://...">
-      </div>
+
       <div class="d-flex" style="gap:8px;margin-top:16px;">
-        <button nbButton status="primary" type="submit" [disabled]="loading"><nb-icon icon="save-outline"></nb-icon> {{ isEditMode ? 'Modifier' : 'Enregistrer' }}</button>
+        <button nbButton status="primary" type="submit" [disabled]="loading">
+          <nb-icon icon="save-outline"></nb-icon> {{ isEditMode ? 'Modifier' : 'Enregistrer' }}
+        </button>
         <button nbButton status="basic" type="button" (click)="annuler()">Annuler</button>
       </div>
     </form>

@@ -33,4 +33,8 @@ export class BoutiqueService {
   desactiver(id: string): Observable<any> {
     return this.http.patch(`${this.API_URL}/desactiver/${id}`, {});
   }
+
+  uploadImage(formData: FormData) {
+    return this.http.post<{url: string}>(`${this.API_URL}/upload`, formData);
+  }
 }

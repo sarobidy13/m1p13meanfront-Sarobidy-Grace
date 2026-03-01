@@ -26,14 +26,25 @@
                   display: flex;
                   align-items: center;
                   gap: 20px;">
+
         <div style="width: 80px; height: 80px;
                     background: rgba(255,255,255,0.1);
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;">
-          <nb-icon icon="shopping-bag-outline" style="font-size: 2rem; color: #74eded;"></nb-icon>
+
+          <!-- Si logo existe -->
+          <img *ngIf="boutique.logo"
+               [src]="'http://localhost:5000' + boutique.logo"
+               alt="Logo"
+               style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+
+          <!-- Sinon icone par défaut -->
+          <nb-icon *ngIf="!boutique.logo" icon="shopping-bag-outline" style="font-size: 2rem; color: #74eded;"></nb-icon>
+
         </div>
+
         <div>
           <h4 style="color: white; margin: 0;">{{ boutique.nom }}</h4>
           <p style="color: #74eded; margin: 4px 0 8px 0;">{{ boutique.idCategorie?.nom }}</p>

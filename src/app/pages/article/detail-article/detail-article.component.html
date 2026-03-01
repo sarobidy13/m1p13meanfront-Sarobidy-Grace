@@ -13,16 +13,14 @@
       </nb-alert>
       <div class="row mb-3">
         <div class="col-md-3" *ngIf="article.image">
-          <img [src]="article.image" [alt]="article.nom" style="width:100%;border-radius:8px;">
+          <img [src]="'http://localhost:5000' + article.image" [alt]="article.nom" style="width:100%;border-radius:8px;">
         </div>
-        <div [class]="article.image ? 'col-md-9' : 'col-md-12'">
+        <div [class]="article.image ? 'col-md-9' : 'col-md-12'" style="padding-top: 30px;">
           <div class="row">
             <div class="col-md-6">
               <p><strong style="color:#00b887;">Nom :</strong> {{ article.nom }}</p>
               <p><strong style="color:#00b887;">Boutique :</strong> {{ article.idBoutique?.nom }}</p>
               <p><strong style="color:#00b887;">Description :</strong> {{ article.description || '—' }}</p>
-            </div>
-            <div class="col-md-6">
               <p><strong style="color:#00b887;">Prix :</strong> {{ article.prix | number }} Ar</p>
               <p><strong style="color:#00b887;">Stock :</strong>
                 <span [style.color]="isEnAlerte() ? '#ff3d71' : '#00d68f'" style="font-weight:700;margin-left:8px;">{{ article.quantite }}</span>
