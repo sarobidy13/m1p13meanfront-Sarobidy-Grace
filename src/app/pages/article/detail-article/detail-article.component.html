@@ -1,0 +1,83 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col"><h5 class="mb-0" style="color:#8b8b89;"><nb-icon icon="archive-outline" style="margin-right:8px;"></nb-icon>Détail Article</h5></div>
+      <div class="col-auto"><button nbButton status="basic" size="small" (click)="retour()"><nb-icon icon="arrow-back-outline"></nb-icon> Retour</button></div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div *ngIf="loading" class="text-center"><nb-spinner></nb-spinner></div>
+    <div *ngIf="!loading">
+      <nb-alert outline="warning" *ngIf="isEnAlerte()">
+        <nb-icon icon="alert-triangle-outline"></nb-icon> Stock faible ! Pensez à faire une entrée stock.
+      </nb-alert>
+      <div class="row mb-3">
+        <div class="col-md-3" *ngIf="article.image">
+          <img [src]="article.image" [alt]="article.nom" style="width:100%;border-radius:8px;">
+        </div>
+        <div [class]="article.image ? 'col-md-9' : 'col-md-12'">
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong style="color:#00b887;">Nom :</strong> {{ article.nom }}</p>
+              <p><strong style="color:#00b887;">Boutique :</strong> {{ article.idBoutique?.nom }}</p>
+              <p><strong style="color:#00b887;">Description :</strong> {{ article.description || '—' }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong style="color:#00b887;">Prix :</strong> {{ article.prix | number }} Ar</p>
+              <p><strong style="color:#00b887;">Stock :</strong>
+                <span [style.color]="isEnAlerte() ? '#ff3d71' : '#00d68f'" style="font-weight:700;margin-left:8px;">{{ article.quantite }}</span>
+              </p>
+              <p><strong style="color:#00b887;">Seuil alerte :</strong> {{ article.seuilAlerte }}</p>
+              <p><strong style="color:#00b887;">Créé le :</strong> {{ article.createdAt | date:'dd/MM/yyyy' }}</p>
+              <p><strong style="color:#00b887;">Modifié le :</strong> {{ article.updatedAt | date:'dd/MM/yyyy' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex" style="gap:8px;margin-bottom:24px;">
+        <button nbButton status="warning" (click)="modifier()"><nb-icon icon="edit-outline"></nb-icon> Modifier</button>
+        <button nbButton status="success" (click)="entreeStock()"><nb-icon icon="plus-circle-outline"></nb-icon> Entrée Stock</button>
+      </div>
+
+      <h6 style="color:#8b8b89;margin-bottom:12px;"><nb-icon icon="pricetags-outline"></nb-icon> Historique des Prix</h6>
+      <table class="table mb-4">
+        <thead><tr>
+          <th style="color:#00b887;">Date</th>
+          <th style="color:#00b887;">Ancien Prix</th>
+          <th style="color:#00b887;">Nouveau Prix</th>
+        </tr></thead>
+        <tbody>
+          <tr *ngFor="let h of historiquePrix">
+            <td>{{ h.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ h.ancienPrix | number }} Ar</td>
+            <td>{{ h.nouveauPrix | number }} Ar</td>
+          </tr>
+          <tr *ngIf="historiquePrix.length===0"><td colspan="3" class="text-center">Aucun changement de prix</td></tr>
+        </tbody>
+      </table>
+
+      <h6 style="color:#8b8b89;margin-bottom:12px;"><nb-icon icon="swap-outline"></nb-icon> Mouvements Stock</h6>
+      <table class="table">
+        <thead><tr>
+          <th style="color:#00b887;">Date</th>
+          <th style="color:#00b887;">Type</th>
+          <th style="color:#00b887;">Quantité</th>
+          <th style="color:#00b887;">Motif</th>
+        </tr></thead>
+        <tbody>
+          <tr *ngFor="let m of mouvements">
+            <td>{{ m.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <span [style.background-color]="m.type==='entree'?'#00d68f':'#ff3d71'" style="color:white;padding:4px 10px;border-radius:12px;font-size:12px;">
+                {{ m.type==='entree' ? '+ Entrée' : '- Sortie' }}
+              </span>
+            </td>
+            <td>{{ m.quantite }}</td>
+            <td>{{ m.motif || '—' }}</td>
+          </tr>
+          <tr *ngIf="mouvements.length===0"><td colspan="4" class="text-center">Aucun mouvement</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

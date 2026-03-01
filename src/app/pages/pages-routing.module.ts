@@ -1,88 +1,30 @@
-import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-
+import { RouterModule, Routes } from '@angular/router';
 import { PagesComponent } from './pages.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { ECommerceComponent } from './e-commerce/e-commerce.component';
-import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
+import { RoleGuard } from '../guards/role.guard';
 
-const routes: Routes = [{
-  path: '',
-  component: PagesComponent,
-  children: [
-    {
-      path: 'dashboard',
-      component: ECommerceComponent,
-    },
-    {
-      path: 'iot-dashboard',
-      component: DashboardComponent,
-    },
-    {
-      path: 'layout',
-      loadChildren: () => import('./layout/layout.module')
-        .then(m => m.LayoutModule),
-    },
-    {
-      path: 'forms',
-      loadChildren: () => import('./forms/forms.module')
-        .then(m => m.FormsModule),
-    },
-    {
-      path: 'ui-features',
-      loadChildren: () => import('./ui-features/ui-features.module')
-        .then(m => m.UiFeaturesModule),
-    },
-    {
-      path: 'modal-overlays',
-      loadChildren: () => import('./modal-overlays/modal-overlays.module')
-        .then(m => m.ModalOverlaysModule),
-    },
-    {
-      path: 'extra-components',
-      loadChildren: () => import('./extra-components/extra-components.module')
-        .then(m => m.ExtraComponentsModule),
-    },
-    {
-      path: 'maps',
-      loadChildren: () => import('./maps/maps.module')
-        .then(m => m.MapsModule),
-    },
-    {
-      path: 'charts',
-      loadChildren: () => import('./charts/charts.module')
-        .then(m => m.ChartsModule),
-    },
-    {
-      path: 'editors',
-      loadChildren: () => import('./editors/editors.module')
-        .then(m => m.EditorsModule),
-    },
-    {
-      path: 'tables',
-      loadChildren: () => import('./tables/tables.module')
-        .then(m => m.TablesModule),
-    },
-    {
-      path: 'miscellaneous',
-      loadChildren: () => import('./miscellaneous/miscellaneous.module')
-        .then(m => m.MiscellaneousModule),
-    },
-    {
-      path: '',
-      redirectTo: 'dashboard',
-      pathMatch: 'full',
-    },
-    {
-      path: '**',
-      component: NotFoundComponent,
-    },
-  ],
-}];
+const routes: Routes = [
+  {
+    path: '',
+    component: PagesComponent,
+    children: [
+      // ADMIN seulement
+      { path: 'boutique', canActivate: [RoleGuard], data: { roles: [1] }, loadChildren: () => import('./boutique/boutique.module').then(m => m.BoutiqueModule) },
+      { path: 'categorie-boutique', canActivate: [RoleGuard], data: { roles: [1] }, loadChildren: () => import('./categorie-boutique/categorie-boutique.module').then(m => m.CategorieBoutiqueModule) },
+      { path: 'contrat', canActivate: [RoleGuard], data: { roles: [1] }, loadChildren: () => import('./contrat/contrat.module').then(m => m.ContratModule) },
+      { path: 'loyer', canActivate: [RoleGuard], data: { roles: [1] }, loadChildren: () => import('./loyer/loyer.module').then(m => m.LoyerModule) },
+      // GERANT seulement
+      { path: 'article', canActivate: [RoleGuard], data: { roles: [2] }, loadChildren: () => import('./article/article.module').then(m => m.ArticleModule) },
+      { path: 'vente', canActivate: [RoleGuard], data: { roles: [2] }, loadChildren: () => import('./vente/vente.module').then(m => m.VenteModule) },
+      { path: 'stock', canActivate: [RoleGuard], data: { roles: [2] }, loadChildren: () => import('./stock/stock.module').then(m => m.StockModule) },
+
+      { path: '', redirectTo: 'boutique', pathMatch: 'full' },
+    ],
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PagesRoutingModule {
-}
+export class PagesRoutingModule {}

@@ -1,0 +1,70 @@
+<nb-card>
+  <nb-card-header>
+    <h5 class="mb-0" style="color: #8b8b89;">
+      <nb-icon icon="shopping-bag-outline" style="margin-right: 8px;"></nb-icon>
+      {{ isEditMode ? 'Modifier la Boutique' : 'Ajouter une Boutique' }}
+    </h5>
+  </nb-card-header>
+
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message = ''">
+      {{ message }}
+    </nb-alert>
+
+    <form (ngSubmit)="save()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label class="label">Nom *</label>
+            <input nbInput fullWidth [(ngModel)]="boutique.nom" name="nom" placeholder="Nom de la boutique" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label class="label">Catégorie *</label>
+            <nb-select fullWidth [(ngModel)]="boutique.idCategorie" name="idCategorie" placeholder="Choisir une catégorie" required>
+              <nb-option *ngFor="let cat of categories" [value]="cat._id">{{ cat.nom }}</nb-option>
+            </nb-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label class="label">Box</label>
+            <input nbInput fullWidth [(ngModel)]="boutique.box" name="box" placeholder="Ex: A12">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label class="label">Étage</label>
+            <nb-select fullWidth [(ngModel)]="boutique.etage" name="etage" placeholder="Choisir un étage">
+              <nb-option *ngFor="let etage of etages" [value]="etage">{{ etage }}</nb-option>
+            </nb-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label class="label">Description</label>
+        <textarea nbInput fullWidth [(ngModel)]="boutique.description" name="description" placeholder="Description" rows="3"></textarea>
+      </div>
+
+      <div class="form-group mb-3">
+        <label class="label">Date fin de location</label>
+        <input nbInput fullWidth [(ngModel)]="boutique.dateFinLocation" name="dateFinLocation" type="date">
+      </div>
+
+      <div class="d-flex">
+        <button nbButton status="primary" type="submit" [disabled]="loading" style="margin-right: 8px;">
+          <nb-icon icon="save-outline"></nb-icon>
+          {{ isEditMode ? 'Modifier' : 'Enregistrer' }}
+        </button>
+        <button nbButton status="basic" type="button" (click)="annuler()">
+          Annuler
+        </button>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

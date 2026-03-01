@@ -1,0 +1,82 @@
+<!-- Stats -->
+<div class="row mb-3">
+  <div class="col-md-3">
+    <nb-card style="border-radius:12px;">
+      <nb-card-body class="text-center">
+        <p style="color:#8b8b89;margin:0;">Total CA</p>
+        <h4 style="color:#00d68f;margin:4px 0;">{{ stats.totalCA | number }} Ar</h4>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-md-3">
+    <nb-card style="border-radius:12px;">
+      <nb-card-body class="text-center">
+        <p style="color:#8b8b89;margin:0;">CA Ce Mois</p>
+        <h4 style="color:#598bff;margin:4px 0;">{{ stats.CAMensuel | number }} Ar</h4>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-md-6">
+    <nb-card style="border-radius:12px;">
+      <nb-card-body>
+        <p style="color:#8b8b89;margin:0 0 8px 0;font-weight:600;">Top Articles</p>
+        <div *ngFor="let a of stats.articlesTop?.slice(0,3)" class="d-flex justify-content-between">
+          <span>{{ a.article?.nom }}</span>
+          <span style="color:#00d68f;font-weight:600;">{{ a.totalVendu }} vendus</span>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col"><h5 class="mb-0" style="color:#8b8b89;"><nb-icon icon="shopping-cart-outline" style="margin-right:8px;"></nb-icon>Liste des Ventes</h5></div>
+      <div class="col-auto"><button nbButton status="primary" [routerLink]="['/pages/vente/form']"><nb-icon icon="plus-outline"></nb-icon> Nouvelle Vente</button></div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message=''">{{ message }}</nb-alert>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="label">Boutique</label>
+        <nb-select fullWidth placeholder="Toutes" [(ngModel)]="filtreBoutique">
+          <nb-option value="">Toutes</nb-option>
+          <nb-option *ngFor="let b of boutiques" [value]="b._id">{{ b.nom }}</nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-4 d-flex align-items-end">
+        <button nbButton status="primary" (click)="filtrer()" style="margin-right:8px;"><nb-icon icon="search-outline"></nb-icon> Filtrer</button>
+        <button nbButton status="basic" (click)="reinitialiser()"><nb-icon icon="refresh-outline"></nb-icon></button>
+      </div>
+    </div>
+    <div *ngIf="loading" class="text-center"><nb-spinner></nb-spinner></div>
+    <table *ngIf="!loading" class="table">
+      <thead>
+        <tr>
+          <th style="color:#00b887;">Boutique</th>
+          <th style="color:#00b887;">Date</th>
+          <th style="color:#00b887;">Montant Total</th>
+          <th style="color:#00b887;">Status</th>
+          <th style="color:#00b887;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let v of ventes">
+          <td>{{ v.idBoutique?.nom }}</td>
+          <td>{{ v.dateVente | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ v.montantTotal | number }} Ar</td>
+          <td>
+            <span [style.background-color]="v.status==='valide'?'#00d68f':'#ff3d71'" style="color:white;padding:4px 10px;border-radius:12px;font-size:12px;">{{ v.status }}</span>
+          </td>
+          <td style="display:flex;gap:4px;">
+            <button nbButton status="info" size="small" (click)="voirDetails(v._id)"><nb-icon icon="eye-outline"></nb-icon></button>
+            <button nbButton status="danger" size="small" (click)="annuler(v._id)" [disabled]="v.status==='annule'"><nb-icon icon="close-outline"></nb-icon></button>
+          </td>
+        </tr>
+        <tr *ngIf="ventes.length===0"><td colspan="5" class="text-center">Aucune vente trouvée</td></tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>

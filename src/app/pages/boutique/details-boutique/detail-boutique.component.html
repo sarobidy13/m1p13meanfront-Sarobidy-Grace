@@ -1,0 +1,116 @@
+<nb-card>
+  <nb-card-header>
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="mb-0" style="color: #74eded;">
+        <nb-icon icon="shopping-bag-outline" style="margin-right: 8px;"></nb-icon>
+        Détail de la Boutique
+      </h5>
+      <button nbButton status="basic" size="small" (click)="retour()">
+        <nb-icon icon="arrow-back-outline"></nb-icon> Retour
+      </button>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div *ngIf="loading" class="text-center p-5">
+      <nb-spinner size="large"></nb-spinner>
+    </div>
+
+    <div *ngIf="!loading">
+
+      <!-- Header boutique -->
+      <div style="background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%);
+                  border-radius: 12px;
+                  padding: 30px;
+                  margin-bottom: 24px;
+                  display: flex;
+                  align-items: center;
+                  gap: 20px;">
+        <div style="width: 80px; height: 80px;
+                    background: rgba(255,255,255,0.1);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;">
+          <nb-icon icon="shopping-bag-outline" style="font-size: 2rem; color: #74eded;"></nb-icon>
+        </div>
+        <div>
+          <h4 style="color: white; margin: 0;">{{ boutique.nom }}</h4>
+          <p style="color: #74eded; margin: 4px 0 8px 0;">{{ boutique.idCategorie?.nom }}</p>
+          <span [style.background-color]="boutique.status ? '#00d68f' : '#ff3d71'"
+                style="color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">
+            {{ boutique.status ? 'Actif' : 'Inactif' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Infos -->
+      <div class="row">
+        <div class="col-md-6">
+          <nb-card style="border-radius: 12px;">
+            <nb-card-header style="color: #74eded; font-size: 14px; font-weight: 600;">
+              <nb-icon icon="info-outline" style="margin-right: 6px;"></nb-icon>
+              Informations générales
+            </nb-card-header>
+            <nb-card-body>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <span style="color: #8f9bb3;">Nom</span>
+                  <span style="font-weight: 600;">{{ boutique.nom }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <span style="color: #8f9bb3;">Catégorie</span>
+                  <span style="font-weight: 600;">{{ boutique.idCategorie?.nom }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <span style="color: #8f9bb3;">Description</span>
+                  <span style="font-weight: 600;">{{ boutique.description || '—' }}</span>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+
+        <div class="col-md-6">
+          <nb-card style="border-radius: 12px;">
+            <nb-card-header style="color: #74eded; font-size: 14px; font-weight: 600;">
+              <nb-icon icon="pin-outline" style="margin-right: 6px;"></nb-icon>
+              Localisation & Dates
+            </nb-card-header>
+            <nb-card-body>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <span style="color: #8f9bb3;">Box</span>
+                  <span style="font-weight: 600;">{{ boutique.box || '—' }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <span style="color: #8f9bb3;">Étage</span>
+                  <span style="font-weight: 600;">{{ boutique.etage || '—' }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <span style="color: #8f9bb3;">Date fin location</span>
+                  <span style="font-weight: 600;">{{ boutique.dateFinLocation ? (boutique.dateFinLocation | date:'dd/MM/yyyy') : '—' }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: #8f9bb3;">Date création</span>
+                  <span style="font-weight: 600;">{{ boutique.createdAt | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex" style="gap: 8px; margin-top: 8px;">
+        <button nbButton status="warning" [routerLink]="['/pages/boutique/form', boutique._id]">
+          <nb-icon icon="edit-outline"></nb-icon> Modifier
+        </button>
+        <button nbButton status="basic" (click)="retour()">
+          <nb-icon icon="arrow-back-outline"></nb-icon> Retour à la liste
+        </button>
+      </div>
+
+    </div>
+  </nb-card-body>
+</nb-card>

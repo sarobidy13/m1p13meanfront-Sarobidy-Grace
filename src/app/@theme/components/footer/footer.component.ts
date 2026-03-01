@@ -4,16 +4,28 @@ import { Component } from '@angular/core';
   selector: 'ngx-footer',
   styleUrls: ['./footer.component.scss'],
   template: `
-    <span class="created-by">
-      Created with ♥ by <b><a href="https://akveo.page.link/8V2f" target="_blank">Akveo</a></b> 2019
-    </span>
-    <div class="socials">
-      <a href="#" target="_blank" class="ion ion-social-github"></a>
-      <a href="#" target="_blank" class="ion ion-social-facebook"></a>
-      <a href="#" target="_blank" class="ion ion-social-twitter"></a>
-      <a href="#" target="_blank" class="ion ion-social-linkedin"></a>
+    <div class="footer-container">
+      <div class="footer-left">
+        <nb-icon icon="code-outline" class="footer-icon"></nb-icon>
+        <span class="developed-by">Développé par</span>
+      </div>
+      <div class="footer-names">
+        <span class="name">
+          <nb-icon icon="person-outline"></nb-icon>
+          RAKOTOARIMALALA Fitahiana Sarobidy
+        </span>
+        <span class="separator">|</span>
+        <span class="name">
+          <nb-icon icon="person-outline"></nb-icon>
+          ANDRIANISOA Grace Hariniana
+        </span>
+      </div>
+      <div class="footer-right">
+        <span class="year">© {{ currentYear }}</span>
+      </div>
     </div>
   `,
 })
 export class FooterComponent {
+  currentYear = new Date().getFullYear();
 }

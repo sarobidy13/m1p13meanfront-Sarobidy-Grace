@@ -1,0 +1,68 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col">
+        <h5 class="mb-0" style="color: #8b8b89;"><nb-icon icon="archive-outline" style="margin-right:8px;"></nb-icon>Liste des Articles</h5>
+      </div>
+      <div class="col-auto">
+        <button nbButton status="primary" [routerLink]="['/pages/article/form']"><nb-icon icon="plus-outline"></nb-icon> Ajouter</button>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message=''">{{ message }}</nb-alert>
+    <nb-alert outline="warning" *ngIf="hasAlertes">
+      <nb-icon icon="alert-triangle-outline"></nb-icon> Certains articles ont un stock faible ou en rupture !
+    </nb-alert>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="label">Boutique</label>
+        <nb-select fullWidth placeholder="Toutes" [(ngModel)]="filtreBoutique">
+          <nb-option value="">Toutes</nb-option>
+          <nb-option *ngFor="let b of boutiques" [value]="b._id">{{ b.nom }}</nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-4 d-flex align-items-end">
+        <button nbButton status="primary" (click)="filtrer()" style="margin-right:8px;"><nb-icon icon="search-outline"></nb-icon> Filtrer</button>
+        <button nbButton status="basic" (click)="reinitialiser()"><nb-icon icon="refresh-outline"></nb-icon></button>
+      </div>
+    </div>
+    <div *ngIf="loading" class="text-center"><nb-spinner></nb-spinner></div>
+    <table *ngIf="!loading" class="table">
+      <thead>
+        <tr>
+          <th style="color:#00b887;">Nom</th>
+          <th style="color:#00b887;">Boutique</th>
+          <th style="color:#00b887;">Prix</th>
+          <th style="color:#00b887;">Stock</th>
+          <th style="color:#00b887;">Seuil</th>
+          <th style="color:#00b887;">Status</th>
+          <th style="color:#00b887;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of articles" [style.background-color]="isEnAlerte(a) ? 'rgba(255,61,113,0.05)' : ''">
+          <td>{{ a.nom }}</td>
+          <td>{{ a.idBoutique?.nom }}</td>
+          <td>{{ a.prix | number }} Ar</td>
+          <td>
+            <span [style.background-color]="a.quantite===0?'#ff3d71':isEnAlerte(a)?'#ffaa00':'#00d68f'"
+                  style="color:white;padding:4px 10px;border-radius:12px;font-size:12px;">{{ a.quantite }}</span>
+          </td>
+          <td>{{ a.seuilAlerte }}</td>
+          <td>
+            <span [style.background-color]="a.status?'#00d68f':'#ff3d71'"
+                  style="color:white;padding:4px 10px;border-radius:12px;font-size:12px;">{{ a.status ? 'Actif' : 'Inactif' }}</span>
+          </td>
+          <td style="display:flex;gap:4px;">
+            <button nbButton status="info" size="small" (click)="voirDetails(a._id)"><nb-icon icon="eye-outline"></nb-icon></button>
+            <button nbButton status="warning" size="small" (click)="modifier(a._id)"><nb-icon icon="edit-outline"></nb-icon></button>
+            <button nbButton status="success" size="small" (click)="entreeStock(a._id)" title="Entrée stock"><nb-icon icon="plus-circle-outline"></nb-icon></button>
+            <button nbButton status="danger" size="small" (click)="desactiver(a._id)" [disabled]="!a.status"><nb-icon icon="slash-outline"></nb-icon></button>
+          </td>
+        </tr>
+        <tr *ngIf="articles.length===0"><td colspan="7" class="text-center">Aucun article trouvé</td></tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>

@@ -67,4 +67,12 @@
       display: none;
     }
   }
+
+  nb-user {
+    ::ng-deep {
+      .user-name {
+        color: #8B4513 !important;
+      }
+    }
+  }
 }

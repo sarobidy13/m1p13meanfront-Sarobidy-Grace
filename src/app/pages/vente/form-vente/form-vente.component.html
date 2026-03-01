@@ -1,0 +1,73 @@
+<nb-card>
+  <nb-card-header>
+    <h5 class="mb-0" style="color:#8b8b89;"><nb-icon icon="shopping-cart-outline" style="margin-right:8px;"></nb-icon>Nouvelle Vente</h5>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message=''">{{ message }}</nb-alert>
+    <div class="row">
+      <!-- Articles -->
+      <div class="col-md-7">
+        <div class="form-group mb-3">
+          <label class="label">Boutique *</label>
+          <nb-select fullWidth [(ngModel)]="idBoutique" name="idBoutique" placeholder="Choisir une boutique" (selectedChange)="onBoutiqueChange()">
+            <nb-option *ngFor="let b of boutiques" [value]="b._id">{{ b.nom }}</nb-option>
+          </nb-select>
+        </div>
+        <div *ngIf="articles.length > 0">
+          <h6 style="color:#8b8b89;margin-bottom:12px;">Articles disponibles</h6>
+          <table class="table">
+            <thead><tr>
+              <th style="color:#00b887;">Article</th>
+              <th style="color:#00b887;">Prix</th>
+              <th style="color:#00b887;">Stock</th>
+              <th style="color:#00b887;">Ajouter</th>
+            </tr></thead>
+            <tbody>
+              <tr *ngFor="let a of articles">
+                <td>{{ a.nom }}</td>
+                <td>{{ a.prix | number }} Ar</td>
+                <td>{{ a.quantite }}</td>
+                <td><button nbButton status="primary" size="small" (click)="ajouterAuPanier(a)"><nb-icon icon="plus-outline"></nb-icon></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="idBoutique && articles.length===0" class="text-center" style="color:#8b8b89;padding:20px;">Aucun article disponible</div>
+      </div>
+
+      <!-- Panier -->
+      <div class="col-md-5">
+        <nb-card style="border-radius:12px;border:2px solid #00b887;">
+          <nb-card-header style="color:#00b887;"><nb-icon icon="shopping-bag-outline"></nb-icon> Panier</nb-card-header>
+          <nb-card-body>
+            <div *ngIf="panier.length===0" class="text-center" style="color:#8b8b89;padding:20px;">Panier vide</div>
+            <div *ngFor="let item of panier;let i=index" style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(143,155,179,0.2);">
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="font-weight:600;">{{ item.nom }}</span>
+                <button nbButton status="danger" size="tiny" (click)="retirerDuPanier(i)"><nb-icon icon="trash-outline"></nb-icon></button>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mt-1">
+                <div class="d-flex align-items-center" style="gap:8px;">
+                  <button nbButton status="basic" size="tiny" (click)="modifierQuantite(item,-1)">-</button>
+                  <span>{{ item.quantite }}</span>
+                  <button nbButton status="basic" size="tiny" (click)="modifierQuantite(item,1)">+</button>
+                </div>
+                <span style="color:#00d68f;">{{ (item.quantite * item.prixUnitaire) | number }} Ar</span>
+              </div>
+            </div>
+            <div *ngIf="panier.length>0" style="margin-top:16px;padding-top:16px;border-top:2px solid #00b887;">
+              <div class="d-flex justify-content-between">
+                <strong>Total :</strong>
+                <strong style="color:#00d68f;font-size:1.1rem;">{{ montantTotal | number }} Ar</strong>
+              </div>
+            </div>
+          </nb-card-body>
+        </nb-card>
+        <div class="d-flex" style="gap:8px;margin-top:16px;">
+          <button nbButton status="primary" (click)="save()" [disabled]="loading||panier.length===0"><nb-icon icon="checkmark-outline"></nb-icon> Valider</button>
+          <button nbButton status="basic" (click)="annuler()">Annuler</button>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,46 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col"><h5 class="mb-0" style="color:#8b8b89;"><nb-icon icon="shopping-cart-outline" style="margin-right:8px;"></nb-icon>Détail de la Vente</h5></div>
+      <div class="col-auto"><button nbButton status="basic" size="small" (click)="retour()"><nb-icon icon="arrow-back-outline"></nb-icon> Retour</button></div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div *ngIf="loading" class="text-center"><nb-spinner></nb-spinner></div>
+    <div *ngIf="!loading">
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <p><strong style="color:#00b887;">Boutique :</strong> {{ vente.idBoutique?.nom }}</p>
+          <p><strong style="color:#00b887;">Date :</strong> {{ vente.dateVente | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong style="color:#00b887;">Montant Total :</strong> <strong style="color:#00d68f;">{{ vente.montantTotal | number }} Ar</strong></p>
+          <p><strong style="color:#00b887;">Status :</strong>
+            <span [style.background-color]="vente.status==='valide'?'#00d68f':'#ff3d71'" style="color:white;padding:4px 10px;border-radius:12px;font-size:12px;margin-left:8px;">{{ vente.status }}</span>
+          </p>
+        </div>
+      </div>
+      <h6 style="color:#8b8b89;margin-bottom:12px;">Articles vendus</h6>
+      <table class="table">
+        <thead><tr>
+          <th style="color:#00b887;">Article</th>
+          <th style="color:#00b887;">Prix Unitaire</th>
+          <th style="color:#00b887;">Quantité</th>
+          <th style="color:#00b887;">Sous-total</th>
+        </tr></thead>
+        <tbody>
+          <tr *ngFor="let d of details">
+            <td>{{ d.idArticle?.nom }}</td>
+            <td>{{ d.prixUnitaire | number }} Ar</td>
+            <td>{{ d.quantite }}</td>
+            <td>{{ (d.prixUnitaire * d.quantite) | number }} Ar</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align:right;"><strong style="color:#00b887;">Total :</strong></td>
+            <td><strong style="color:#00d68f;">{{ vente.montantTotal | number }} Ar</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

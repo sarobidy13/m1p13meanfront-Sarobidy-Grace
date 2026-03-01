@@ -1,0 +1,58 @@
+<div style="min-height: 100vh; background: #f5f5f0;">
+
+  <!-- Navbar -->
+  <nav style="background:#cacac8; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+    <h3 style="color: #8B4513; margin: 0; font-size: 1.3rem;">
+      🏪 Centre Commercial
+    </h3>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <a routerLink="/boutiques/panier"
+         style="background: #8B4513; color: white; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 14px;">
+        🛒 Panier
+      </a>
+      <a routerLink="/auth/login"
+         style="background: transparent; color: #8B4513; padding: 8px 20px; border-radius: 20px; text-decoration: none; border: 1px solid #8B4513; font-size: 14px;">
+        Se connecter
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div style="text-align: center; padding: 60px 20px 40px; ">
+    <h1 style="color: #8B4513; font-size: 2.5rem; margin-bottom: 12px; font-weight: 700;">Bienvenue au Centre Commercial</h1>
+    <p style="color: #a0785a; font-size: 1.1rem;">Découvrez nos boutiques et leurs articles</p>
+  </div>
+
+  <!-- Liste boutiques -->
+  <div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+    <h2 style="color: #8B4513; margin-bottom: 24px; font-size: 1.4rem;">Nos Boutiques</h2>
+
+    <div *ngIf="loading" style="text-align: center; color: #8B4513; padding: 40px;">Chargement...</div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+      <div *ngFor="let b of boutiques"
+           (click)="voirBoutique(b._id)"
+           style="background: white; border-radius: 16px; overflow: hidden; cursor: pointer; box-shadow: 0 4px 20px rgba(3, 3, 3, 0.08); transition: all 0.3s; border: 1px solid #f0e8e0;"
+           onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(139,69,19,0.15)'"
+           onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.08)'">
+
+        <div style="height: 160px; background: linear-gradient(135deg, #F5DEB3, #8b8b89); display: flex; align-items: center; justify-content: center;">
+          <span style="font-size: 4rem;">🏪</span>
+        </div>
+
+        <div style="padding: 20px;">
+          <h4 style="color: #3a2010; margin: 0 0 6px 0; font-size: 1.1rem;">{{ b.nom }}</h4>
+          <p style="color: #a0785a; font-size: 13px; margin: 0 0 6px 0;">{{ b.idCategorie?.nom || 'Boutique' }}</p>
+          <p style="color: #bbb; font-size: 12px; margin: 0 0 16px 0;">{{ b.description || '' }}</p>
+          <button style="width: 100%; background: #8B4513; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+            Voir les articles →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && boutiques.length === 0" style="text-align: center; color: #aaa; padding: 60px;">
+      Aucune boutique disponible
+    </div>
+  </div>
+</div>

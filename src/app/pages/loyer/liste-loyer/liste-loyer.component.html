@@ -1,0 +1,59 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col">
+        <h5 class="mb-0" style="color: #8b8b89;">
+          <nb-icon icon="calendar-outline" style="margin-right: 8px;"></nb-icon>
+          Suivi des Loyers par Boutique
+        </h5>
+      </div>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div *ngIf="loading" class="text-center"><nb-spinner></nb-spinner></div>
+
+    <table *ngIf="!loading" class="table">
+      <thead>
+        <tr>
+          <th style="color: #00b887;">Boutique</th>
+          <th style="color: #00b887;">Total Loyers</th>
+          <th style="color: #00b887;">Payés</th>
+          <th style="color: #00b887;">Impayés</th>
+          <th style="color: #00b887;">En Retard</th>
+          <th style="color: #00b887;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of boutiquesLoyers">
+          <td>{{ b.boutiqueNom }}</td>
+          <td>{{ b.totalLoyers }}</td>
+          <td>
+            <span style="background-color: #00d68f; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+              {{ b.totalPaye }}
+            </span>
+          </td>
+          <td>
+            <span style="background-color: #ffaa00; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+              {{ b.totalImpaye }}
+            </span>
+          </td>
+          <td>
+            <span [style.background-color]="b.enRetard > 0 ? '#ff3d71' : '#00d68f'"
+                  style="color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+              {{ b.enRetard }}
+            </span>
+          </td>
+          <td>
+            <button nbButton status="info" size="small" (click)="voirDetails(b.idContrat)">
+              <nb-icon icon="eye-outline"></nb-icon> Voir Loyers
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="boutiquesLoyers.length === 0">
+          <td colspan="6" class="text-center">Aucun loyer trouvé</td>
+        </tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>

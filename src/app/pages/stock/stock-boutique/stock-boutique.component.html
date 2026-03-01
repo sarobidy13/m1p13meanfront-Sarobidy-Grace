@@ -1,0 +1,180 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col">
+        <h5 class="mb-0" style="color: #8b8b89;">
+          <nb-icon icon="layers-outline" style="margin-right: 8px;"></nb-icon>
+          Gestion du Stock par Boutique
+        </h5>
+      </div>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <!-- Sélection boutique -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <label class="label">Sélectionner une Boutique *</label>
+        <nb-select fullWidth placeholder="Choisir une boutique" [(ngModel)]="idBoutiqueSelect" (selectedChange)="onBoutiqueChange()">
+          <nb-option *ngFor="let b of boutiques" [value]="b._id">{{ b.nom }}</nb-option>
+        </nb-select>
+      </div>
+    </div>
+
+    <!-- Stats boutique -->
+    <div class="row mb-4" *ngIf="boutique">
+      <div class="col-md-3">
+        <nb-card style="border-radius: 12px; border-left: 4px solid #598bff;">
+          <nb-card-body class="text-center">
+            <p style="color: #8b8b89; margin: 0; font-size: 12px;">Total Articles</p>
+            <h4 style="color: #598bff; margin: 4px 0;">{{ articles.length }}</h4>
+          </nb-card-body>
+        </nb-card>
+      </div>
+      <div class="col-md-3">
+        <nb-card style="border-radius: 12px; border-left: 4px solid #00d68f;">
+          <nb-card-body class="text-center">
+            <p style="color: #8b8b89; margin: 0; font-size: 12px;">Stock OK</p>
+            <h4 style="color: #00d68f; margin: 4px 0;">{{ articles.length - nbAlertes }}</h4>
+          </nb-card-body>
+        </nb-card>
+      </div>
+      <div class="col-md-3">
+        <nb-card style="border-radius: 12px; border-left: 4px solid #ffaa00;">
+          <nb-card-body class="text-center">
+            <p style="color: #8b8b89; margin: 0; font-size: 12px;">Stock Faible</p>
+            <h4 style="color: #ffaa00; margin: 4px 0;">{{ nbAlertes - nbRuptures }}</h4>
+          </nb-card-body>
+        </nb-card>
+      </div>
+      <div class="col-md-3">
+        <nb-card style="border-radius: 12px; border-left: 4px solid #ff3d71;">
+          <nb-card-body class="text-center">
+            <p style="color: #8b8b89; margin: 0; font-size: 12px;">Ruptures</p>
+            <h4 style="color: #ff3d71; margin: 4px 0;">{{ nbRuptures }}</h4>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+
+    <!-- Alerte -->
+    <nb-alert outline="warning" *ngIf="boutique && nbAlertes > 0">
+      <nb-icon icon="alert-triangle-outline"></nb-icon>
+      {{ nbRuptures }} article(s) en rupture et {{ nbAlertes - nbRuptures }} article(s) en stock faible pour cette boutique !
+    </nb-alert>
+
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message = ''">{{ message }}</nb-alert>
+
+    <div *ngIf="loading" class="text-center"><nb-spinner></nb-spinner></div>
+
+    <!-- Tableau articles stock -->
+    <div *ngIf="!loading && boutique">
+      <div class="row mb-3">
+        <div class="col-md-4 d-flex align-items-center" style="gap: 8px;">
+          <label class="label" style="margin: 0;">Afficher seulement les alertes</label>
+          <input type="checkbox" [(ngModel)]="filtreAlerte" (change)="filtrerAlerte()">
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Liste articles -->
+        <div [class]="articleSelectionne ? 'col-md-6' : 'col-md-12'">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="color: #00b887;">Article</th>
+                <th style="color: #00b887;">Stock</th>
+                <th style="color: #00b887;">Seuil</th>
+                <th style="color: #00b887;">État</th>
+                <th style="color: #00b887;">Entrée</th>
+                <th style="color: #00b887;">Historique</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let a of articlesFiltres"
+                  [style.background-color]="articleSelectionne?._id === a._id ? 'rgba(0,184,135,0.05)' : ''">
+                <td><strong>{{ a.nom }}</strong><br><small style="color: #8b8b89;">{{ a.prix | number }} Ar</small></td>
+                <td>
+                  <span [style.background-color]="getStockColor(a)"
+                        style="color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700;">
+                    {{ a.quantite }}
+                  </span>
+                </td>
+                <td>{{ a.seuilAlerte }}</td>
+                <td>
+                  <span [style.background-color]="getStockColor(a)"
+                        style="color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px;">
+                    {{ getStockLabel(a) }}
+                  </span>
+                </td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <input nbInput [(ngModel)]="quantiteEntree" type="number" min="1" placeholder="Qté"
+                           style="width: 60px; padding: 4px;">
+                    <button nbButton status="success" size="small" (click)="entreeStock(a)">
+                      <nb-icon icon="plus-outline"></nb-icon>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <button nbButton status="info" size="small" (click)="voirMouvements(a)">
+                    <nb-icon icon="clock-outline"></nb-icon>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="articlesFiltres.length === 0">
+                <td colspan="6" class="text-center">Aucun article trouvé</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Historique mouvements -->
+        <div class="col-md-6" *ngIf="articleSelectionne">
+          <nb-card style="border-radius: 12px;">
+            <nb-card-header>
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="color: #8b8b89; font-size: 14px;">
+                  <nb-icon icon="clock-outline"></nb-icon>
+                  Mouvements — {{ articleSelectionne.nom }}
+                </span>
+                <button nbButton status="basic" size="tiny" (click)="articleSelectionne = null">
+                  <nb-icon icon="close-outline"></nb-icon>
+                </button>
+              </div>
+            </nb-card-header>
+            <nb-card-body>
+              <div *ngIf="loadingMouvements" class="text-center"><nb-spinner></nb-spinner></div>
+              <div *ngIf="!loadingMouvements" style="max-height: 400px; overflow-y: auto;">
+                <div *ngFor="let m of mouvements"
+                     style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(143,155,179,0.2);">
+                  <div>
+                    <span [style.background-color]="m.type === 'entree' ? '#00d68f' : '#ff3d71'"
+                          style="color: white; padding: 2px 8px; border-radius: 8px; font-size: 11px; margin-right: 8px;">
+                      {{ m.type === 'entree' ? '+ Entrée' : '- Sortie' }}
+                    </span>
+                    <span style="font-weight: 700;">{{ m.quantite }}</span>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="color: #8b8b89; font-size: 11px;">{{ m.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                    <div style="color: #8b8b89; font-size: 11px;">{{ m.motif || '—' }}</div>
+                  </div>
+                </div>
+                <div *ngIf="mouvements.length === 0" class="text-center" style="color: #8b8b89; padding: 20px;">
+                  Aucun mouvement
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message si pas de boutique sélectionnée -->
+    <div *ngIf="!boutique && !loading" class="text-center" style="padding: 40px; color: #8b8b89;">
+      <nb-icon icon="layers-outline" style="font-size: 3rem;"></nb-icon>
+      <p style="margin-top: 16px;">Sélectionnez une boutique pour voir son stock</p>
+    </div>
+
+  </nb-card-body>
+</nb-card>

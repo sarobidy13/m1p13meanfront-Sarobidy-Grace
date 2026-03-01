@@ -1,0 +1,51 @@
+<nb-card>
+  <nb-card-header>
+    {{ isEditMode ? 'Modifier la Catégorie' : 'Ajouter une Catégorie' }}
+  </nb-card-header>
+
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message = ''">
+      {{ message }}
+    </nb-alert>
+
+    <form (ngSubmit)="save()">
+
+      <div class="form-group">
+        <label class="label">Nom *</label>
+        <input nbInput
+               fullWidth
+               [(ngModel)]="categorie.nom"
+               name="nom"
+               placeholder="Nom de la catégorie"
+               required>
+      </div>
+
+      <br>
+
+      <div class="form-group">
+        <label class="label">Description</label>
+        <textarea nbInput
+                  fullWidth
+                  [(ngModel)]="categorie.description"
+                  name="description"
+                  placeholder="Description de la catégorie"
+                  rows="4">
+        </textarea>
+      </div>
+
+      <br>
+
+      <div class="d-flex">
+        <button nbButton status="primary" type="submit" [disabled]="loading">
+          <nb-icon icon="save-outline"></nb-icon>
+          {{ isEditMode ? 'Modifier' : 'Enregistrer' }}
+        </button>
+        &nbsp;
+        <button nbButton status="basic" type="button" (click)="annuler()">
+          Annuler
+        </button>
+      </div>
+
+    </form>
+  </nb-card-body>
+</nb-card>

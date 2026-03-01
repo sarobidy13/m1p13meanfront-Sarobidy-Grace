@@ -1,0 +1,86 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col">
+        <h5 class="mb-0" style="color: #8b8b89;">
+          <nb-icon icon="file-text-outline" style="margin-right: 8px;"></nb-icon>
+          Détail du Contrat
+        </h5>
+      </div>
+      <div class="col-auto" style="display: flex; gap: 8px;">
+        <button nbButton status="warning" (click)="exporterPDF()">
+          <nb-icon icon="download-outline"></nb-icon> Exporter PDF
+        </button>
+        <button nbButton status="basic" size="small" (click)="retour()">
+          <nb-icon icon="arrow-back-outline"></nb-icon> Retour
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div *ngIf="loading" class="text-center"><nb-spinner></nb-spinner></div>
+
+    <div *ngIf="!loading">
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <p><strong style="color: #00b887;">Boutique :</strong> {{ contrat.idBoutique?.nom }}</p>
+          <p><strong style="color: #00b887;">Date Début :</strong> {{ contrat.dateDebut | date:'dd/MM/yyyy' }}</p>
+          <p><strong style="color: #00b887;">Date Fin :</strong> {{ contrat.dateFin | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong style="color: #00b887;">Montant Mensuel :</strong> {{ contrat.montantMensuel | number }} Ar</p>
+          <p>
+            <strong style="color: #00b887;">Status :</strong>
+            <span [style.background-color]="contrat.status === 'actif' ? '#00d68f' : '#ff3d71'"
+                  style="color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; margin-left: 8px;">
+              {{ contrat.status }}
+            </span>
+          </p>
+          <p><strong style="color: #00b887;">Créé le :</strong> {{ contrat.createdAt | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+
+      <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message = ''">{{ message }}</nb-alert>
+
+      <h6 style="color: #8b8b89; margin-bottom: 16px;">
+        <nb-icon icon="calendar-outline"></nb-icon> Suivi des Loyers
+      </h6>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="color: #00b887;">Période</th>
+            <th style="color: #00b887;">Montant</th>
+            <th style="color: #00b887;">Échéance</th>
+            <th style="color: #00b887;">Date Paiement</th>
+            <th style="color: #00b887;">Status</th>
+            <th style="color: #00b887;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let loyer of loyers">
+            <td>{{ getNomMois(loyer.mois) }} {{ loyer.annee }}</td>
+            <td>{{ loyer.montant | number }} Ar</td>
+            <td>{{ loyer.dateEcheance | date:'dd/MM/yyyy' }}</td>
+            <td>{{ loyer.datePaiement ? (loyer.datePaiement | date:'dd/MM/yyyy') : '—' }}</td>
+            <td>
+              <span [style.background-color]="getStatusColor(loyer.status)"
+                    style="color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+                {{ loyer.status }}
+              </span>
+            </td>
+            <td>
+              <button nbButton status="success" size="small" (click)="payer(loyer._id)" [disabled]="loyer.status === 'paye'">
+                <nb-icon icon="checkmark-outline"></nb-icon> Payer
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="loyers.length === 0">
+            <td colspan="6" class="text-center">Aucun loyer trouvé</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,35 @@
+<nb-card>
+  <nb-card-header>
+    <h5 class="mb-0" style="color:#8b8b89;"><nb-icon icon="plus-circle-outline" style="margin-right:8px;"></nb-icon>Entrée Stock — {{ article.nom }}</h5>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message=''">{{ message }}</nb-alert>
+    <div class="row mb-4" style="background:rgba(0,214,143,0.05);padding:16px;border-radius:8px;">
+      <div class="col-md-4"><p><strong style="color:#00b887;">Article :</strong> {{ article.nom }}</p></div>
+      <div class="col-md-4"><p><strong style="color:#00b887;">Stock actuel :</strong>
+        <span [style.color]="article.quantite <= article.seuilAlerte ? '#ff3d71' : '#00d68f'" style="font-weight:700;margin-left:8px;">{{ article.quantite }}</span>
+      </p></div>
+      <div class="col-md-4"><p><strong style="color:#00b887;">Seuil alerte :</strong> {{ article.seuilAlerte }}</p></div>
+    </div>
+    <form (ngSubmit)="save()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label class="label">Quantité à ajouter *</label>
+            <input nbInput fullWidth [(ngModel)]="quantite" name="quantite" type="number" min="1" placeholder="Ex: 20" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label class="label">Motif</label>
+            <input nbInput fullWidth [(ngModel)]="motif" name="motif" placeholder="Ex: Réapprovisionnement">
+          </div>
+        </div>
+      </div>
+      <div class="d-flex" style="gap:8px;margin-top:16px;">
+        <button nbButton status="success" type="submit" [disabled]="loading"><nb-icon icon="checkmark-outline"></nb-icon> Confirmer</button>
+        <button nbButton status="basic" type="button" (click)="annuler()">Annuler</button>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

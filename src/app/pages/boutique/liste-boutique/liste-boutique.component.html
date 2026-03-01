@@ -1,0 +1,100 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col">
+        <h5 class="mb-0" style="color: #8b8b89;">
+          <nb-icon icon="shopping-bag-outline" style="margin-right: 8px;"></nb-icon>
+          Liste des Boutiques
+        </h5>
+      </div>
+      <div class="col-auto">
+        <button nbButton status="primary" [routerLink]="['/pages/boutique/form']">
+          <nb-icon icon="plus-outline"></nb-icon> Ajouter
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message = ''">
+      {{ message }}
+    </nb-alert>
+
+    <!-- Filtres -->
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label class="label">Catégorie</label>
+        <nb-select fullWidth placeholder="Toutes" [(ngModel)]="filtreCategorie">
+          <nb-option value="">Toutes</nb-option>
+          <nb-option *ngFor="let cat of categories" [value]="cat._id">{{ cat.nom }}</nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-3">
+        <label class="label">Étage</label>
+        <nb-select fullWidth placeholder="Tous" [(ngModel)]="filtreEtage">
+          <nb-option value="">Tous</nb-option>
+          <nb-option *ngFor="let etage of etages" [value]="etage">{{ etage }}</nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-3">
+        <label class="label">Status</label>
+        <nb-select fullWidth placeholder="Tous" [(ngModel)]="filtreStatus">
+          <nb-option value="">Tous</nb-option>
+          <nb-option value="true">Actif</nb-option>
+          <nb-option value="false">Inactif</nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button nbButton status="primary" (click)="filtrer()" style="margin-right: 8px;">
+          <nb-icon icon="search-outline"></nb-icon> Filtrer
+        </button>
+        <button nbButton status="basic" (click)="reinitialiser()">
+          <nb-icon icon="refresh-outline"></nb-icon>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center">
+      <nb-spinner></nb-spinner>
+    </div>
+
+    <table *ngIf="!loading" class="table">
+      <thead>
+        <tr>
+          <th style="color: #00b887;">Nom</th>
+          <th style="color: #00b887;">Catégorie</th>
+          <th style="color: #00b887;">Box / Étage</th>
+          <th style="color: #00b887;">Status</th>
+          <th style="color: #00b887;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let boutique of boutiques">
+          <td>{{ boutique.nom }}</td>
+          <td>{{ boutique.idCategorie?.nom }}</td>
+          <td>Box {{ boutique.box }} | Étage N° {{ boutique.etage }}</td>
+          <td>
+            <span [style.background-color]="boutique.status ? '#00d68f' : '#ff3d71'"
+                  style="color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+              {{ boutique.status ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+          <td>
+            <button nbButton status="info" size="small" (click)="voirDetails(boutique._id)" style="margin-right: 4px;">
+              <nb-icon icon="eye-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" size="small" (click)="modifier(boutique._id)" style="margin-right: 4px;">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+            <button nbButton status="danger" size="small" (click)="desactiver(boutique._id)" [disabled]="!boutique.status">
+              <nb-icon icon="slash-outline"></nb-icon>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="boutiques.length === 0">
+          <td colspan="5" class="text-center">Aucune boutique trouvée</td>
+        </tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>

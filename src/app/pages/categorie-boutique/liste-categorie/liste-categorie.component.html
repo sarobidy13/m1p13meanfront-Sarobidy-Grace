@@ -1,0 +1,62 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col">
+        <h5 class="mb-0" style="color: #8b8b89;">
+          <nb-icon icon="grid-outline" style="margin-right: 8px;"></nb-icon>
+          Liste des Catégories de Boutiques
+        </h5>
+      </div>
+      <div class="col-auto">
+        <button nbButton status="primary" [routerLink]="['/pages/categorie-boutique/form']">
+          <nb-icon icon="plus-outline"></nb-icon> Ajouter
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message = ''">
+      {{ message }}
+    </nb-alert>
+
+    <div *ngIf="loading" class="text-center">
+      <nb-spinner></nb-spinner>
+    </div>
+
+    <table *ngIf="!loading" class="table">
+      <thead>
+        <tr>
+          <th style="color: #00b887;">Nom</th>
+          <th style="color: #00b887;">Description</th>
+          <th style="color: #00b887;">Status</th>
+          <th style="color: #00b887;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categories">
+          <td>{{ cat.nom }}</td>
+          <td>{{ cat.description }}</td>
+          <td>
+            <span [style.background-color]="cat.status ? '#00d68f' : '#ff3d71'"
+                  [style.color]="'white'"
+                  style="padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+              {{ cat.status ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+          <td>
+            <button nbButton status="warning" size="small" (click)="modifier(cat._id)">
+              <nb-icon icon="edit-outline"></nb-icon> Modifier
+            </button>
+            &nbsp;
+            <button nbButton status="danger" size="small" (click)="desactiver(cat._id)" [disabled]="!cat.status">
+              <nb-icon icon="slash-outline"></nb-icon> Désactiver
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="categories.length === 0">
+          <td colspan="4" class="text-center">Aucune catégorie trouvée</td>
+        </tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,85 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col">
+        <h5 class="mb-0" style="color: #8b8b89;">
+          <nb-icon icon="file-text-outline" style="margin-right: 8px;"></nb-icon>
+          Liste des Contrats
+        </h5>
+      </div>
+      <div class="col-auto">
+        <button nbButton status="primary" [routerLink]="['/pages/contrat/form']">
+          <nb-icon icon="plus-outline"></nb-icon> Nouveau Contrat
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message = ''">{{ message }}</nb-alert>
+
+    <!-- Filtres -->
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label class="label">Status</label>
+        <nb-select fullWidth placeholder="Tous" [(ngModel)]="filtreStatus">
+          <nb-option value="">Tous</nb-option>
+          <nb-option value="actif">Actif</nb-option>
+          <nb-option value="termine">Terminé</nb-option>
+          <nb-option value="resilie">Résilié</nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button nbButton status="primary" (click)="filtrer()" style="margin-right: 8px;">
+          <nb-icon icon="search-outline"></nb-icon> Filtrer
+        </button>
+        <button nbButton status="basic" (click)="reinitialiser()">
+          <nb-icon icon="refresh-outline"></nb-icon>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center"><nb-spinner></nb-spinner></div>
+
+    <table *ngIf="!loading" class="table">
+      <thead>
+        <tr>
+          <th style="color: #00b887;">Boutique</th>
+          <th style="color: #00b887;">Date Début</th>
+          <th style="color: #00b887;">Date Fin</th>
+          <th style="color: #00b887;">Montant Mensuel</th>
+          <th style="color: #00b887;">Status</th>
+          <th style="color: #00b887;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contrat of contratsFiltres">
+          <td>{{ contrat.idBoutique?.nom }}</td>
+          <td>{{ contrat.dateDebut | date:'dd/MM/yyyy' }}</td>
+          <td>{{ contrat.dateFin | date:'dd/MM/yyyy' }}</td>
+          <td>{{ contrat.montantMensuel | number }} Ar</td>
+          <td>
+            <span [style.background-color]="getStatusColor(contrat.status)"
+                  style="color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+              {{ contrat.status }}
+            </span>
+          </td>
+          <td>
+            <button nbButton status="info" size="small" (click)="voirDetails(contrat._id)" style="margin-right: 4px;">
+              <nb-icon icon="eye-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" size="small" (click)="modifier(contrat._id)" style="margin-right: 4px;" [disabled]="contrat.status !== 'actif'">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+            <button nbButton status="danger" size="small" (click)="resilier(contrat._id)" [disabled]="contrat.status !== 'actif'">
+              <nb-icon icon="slash-outline"></nb-icon>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="contratsFiltres.length === 0">
+          <td colspan="6" class="text-center">Aucun contrat trouvé</td>
+        </tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>

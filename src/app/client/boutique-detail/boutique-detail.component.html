@@ -1,0 +1,56 @@
+<div style="min-height:100vh;background:#1a1a2e;">
+  <nav style="background:#cacac8;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <button (click)="retour()" style="background:transparent;border:none;color:#3a3a3a;cursor:pointer;font-size:1.2rem;">←</button>
+      <h3 style="color:#8B4513;margin:0;">{{ boutique?.nom }}</h3>
+    </div>
+    <button (click)="voirPanier()" style="background:#866a55;color:white;padding:8px 20px;border-radius:20px;border:none;cursor:pointer;font-weight:600;">
+      🛒 Panier ({{ panier.length }}) — {{ totalPanier() | number }} Ar
+    </button>
+  </nav>
+  <div style="max-width:1200px;margin:0 auto;padding:32px 20px;">
+    <div *ngIf="message" style="background:rgba(0,214,143,0.2);border:1px solid #00d68f;color:#00d68f;padding:12px 20px;border-radius:8px;margin-bottom:20px;">✓ {{ message }}</div>
+    <!-- Filtre -->
+    <div style="background:#16213e;border-radius:12px;padding:20px;margin-bottom:24px;display:flex;gap:12px;align-items:flex-end;">
+      <div style="flex:1;">
+        <label style="color:#8B4513;font-size:12px;display:block;margin-bottom:6px;">Rechercher</label>
+        <input [(ngModel)]="search" (keyup.enter)="filtrer()" placeholder="Ex: Robe, Chaussure..."
+               style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid rgba(139,69,19,0.5);background:#1a1a2e;color:#F5DEB3;box-sizing:border-box;">
+      </div>
+      <button (click)="filtrer()" style="background:#866a55;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;">🔍 Rechercher</button>
+      <button (click)="reinitialiser()" style="background:transparent;color:#aaa;border:1px solid #aaa;padding:10px 16px;border-radius:8px;cursor:pointer;">↺</button>
+    </div>
+    <div *ngIf="loading" style="text-align:center;color:#F5DEB3;padding:40px;">Chargement...</div>
+    <!-- Articles -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;">
+      <div *ngFor="let a of articles" style="background:#16213e;border-radius:12px;overflow:hidden;border:1px solid rgba(139,69,19,0.3);">
+        <div style="height:180px;background:linear-gradient(135deg,#16213e,#0f3460);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <img *ngIf="a.image" [src]="a.image" style="width:100%;height:100%;object-fit:cover;">
+          <span *ngIf="!a.image" style="font-size:3rem;">📦</span>
+        </div>
+        <div style="padding:16px;">
+          <h5 style="color:#F5DEB3;margin:0 0 6px 0;">{{ a.nom }}</h5>
+          <p style="color:#aaa;font-size:12px;margin:0 0 12px 0;">{{ a.description }}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <span style="color:#00d68f;font-weight:700;font-size:1.1rem;">{{ a.prix | number }} Ar</span>
+            <span [style.color]="a.quantite===0?'#ff3d71':'#00d68f'" style="font-size:12px;">
+              {{ a.quantite===0 ? 'Rupture' : 'Dispo ('+a.quantite+')' }}
+            </span>
+          </div>
+          <button *ngIf="!isInPanier(a._id)" (click)="ajouterAuPanier(a)" [disabled]="a.quantite===0"
+                  style="width:100%;padding:10px;border-radius:8px;border:none;cursor:pointer;font-weight:600;"
+                  [style.background]="a.quantite===0?'#333':'#8b8b89'"
+                  [style.color]="'white'">
+            {{ a.quantite===0 ? 'Indisponible' : '+ Ajouter au panier' }}
+          </button>
+          <div *ngIf="isInPanier(a._id)" style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,214,143,0.1);border-radius:8px;padding:8px;">
+            <button (click)="clientService.modifierQuantite(a._id,-1)" style="background:#ff3d71;color:white;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-weight:700;">-</button>
+            <span style="color:#00d68f;font-weight:700;">{{ getQtePanier(a._id) }}</span>
+            <button (click)="clientService.modifierQuantite(a._id,1)" style="background:#00d68f;color:white;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-weight:700;">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!loading && articles.length===0" style="text-align:center;color:#aaa;padding:60px;">Aucun article trouvé</div>
+  </div>
+</div>
