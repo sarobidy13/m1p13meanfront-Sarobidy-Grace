@@ -44,10 +44,10 @@ export class AuthService {
 
   private getRoleNumber(role: string): number {
     switch (role) {
-      case 'admin': return 0;
-      case 'gerant-boutique': return 1;
-      case 'client': return 2;
-      default: return 2;
+      case 'admin': return 1;
+      case 'gerant-boutique': return 2;
+      case 'client': return 3;
+      default: return 3;
     }
   }
 

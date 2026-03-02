@@ -1,6 +1,7 @@
 import { NbMenuItem } from '@nebular/theme';
 
 export const MENU_ADMIN: NbMenuItem[] = [
+  { title: 'Utilisateur', icon: 'person-outline', link: '/pages/utilisateur' },
   { title: 'Catégories', icon: 'grid-outline', link: '/pages/categorie-boutique' },
   { title: 'Boutiques', icon: 'shopping-bag-outline', link: '/pages/boutique' },
   { title: 'Contrats', icon: 'file-text-outline', link: '/pages/contrat' },

@@ -1,0 +1,72 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col">
+        <h5 class="mb-0" style="color: #8b8b89;">
+          <nb-icon icon="person-outline" style="margin-right: 8px;"></nb-icon>
+          {{ isEditMode ? 'Modifier' : 'Ajouter' }} un Utilisateur
+        </h5>
+      </div>
+      <div class="col-auto">
+        <button nbButton status="basic" [routerLink]="['/pages/utilisateur']">
+          <nb-icon icon="arrow-back-outline"></nb-icon> Retour
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message = ''">
+      {{ message }}
+    </nb-alert>
+
+    <div class="form-group">
+      <label class="label">Nom</label>
+      <input nbInput fullWidth placeholder="Nom" [(ngModel)]="user.nom" class="mb-3">
+    </div>
+
+    <div class="form-group">
+      <label class="label">Prénom</label>
+      <input nbInput fullWidth placeholder="Prénom" [(ngModel)]="user.prenom" class="mb-3">
+    </div>
+
+    <div class="form-group">
+      <label class="label">Email</label>
+      <input nbInput fullWidth type="email" placeholder="Email" [(ngModel)]="user.email" class="mb-3">
+    </div>
+
+    <div class="form-group">
+      <label class="label">Téléphone</label>
+      <input nbInput fullWidth placeholder="Téléphone" [(ngModel)]="user.tel" class="mb-3">
+    </div>
+
+    <div class="form-group">
+      <label class="label">Rôle</label>
+     <nb-select fullWidth placeholder="Choisir un rôle" [(ngModel)]="user.role" class="mb-3" (selectedChange)="onRoleChange($event)">
+        <nb-option [value]="1">Admin</nb-option>
+        <nb-option [value]="2">Gérant Boutique</nb-option>
+        <nb-option [value]="3">Client</nb-option>
+      </nb-select>
+    </div>
+
+    <div class="form-group" *ngIf="user.role == 2">
+      <label class="label">Boutique</label>
+      <nb-select fullWidth placeholder="Choisir une boutique" [(ngModel)]="user.idBoutique" class="mb-3">
+        <nb-option *ngFor="let boutique of boutiques" [value]="boutique._id">
+          {{ boutique.nom }}
+        </nb-option>
+      </nb-select>
+    </div>
+
+    <div class="form-group" *ngIf="!isEditMode">
+      <label class="label">Mot de passe</label>
+      <input nbInput fullWidth type="password" placeholder="Mot de passe" [(ngModel)]="user.mdp" class="mb-3">
+    </div>
+
+    <button nbButton status="primary" fullWidth (click)="submit()">
+      <nb-icon icon="save-outline"></nb-icon>
+      {{ isEditMode ? 'Modifier' : 'Créer' }}
+    </button>
+
+  </nb-card-body>
+</nb-card>

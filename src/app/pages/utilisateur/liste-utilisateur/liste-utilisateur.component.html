@@ -1,0 +1,62 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row align-items-center">
+      <div class="col">
+        <h5 class="mb-0" style="color: #8b8b89;">
+          <nb-icon icon="people-outline" style="margin-right: 8px;"></nb-icon>
+          Liste des Utilisateurs
+        </h5>
+      </div>
+      <div class="col-auto">
+        <button nbButton status="primary" [routerLink]="['/pages/utilisateur/form']">
+          <nb-icon icon="plus-outline"></nb-icon> Ajouter
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <nb-alert *ngIf="message" [outline]="messageType" closable (close)="message = ''">
+      {{ message }}
+    </nb-alert>
+
+    <div *ngIf="loading" class="text-center">
+      <nb-spinner></nb-spinner>
+    </div>
+
+    <table *ngIf="!loading" class="table">
+      <thead>
+        <tr>
+          <th style="color: #00b887;">Nom</th>
+          <th style="color: #00b887;">Prénom</th>
+          <th style="color: #00b887;">Email</th>
+          <th style="color: #00b887;">Téléphone</th>
+          <th style="color: #00b887;">Rôle</th>
+          <th style="color: #00b887;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of utilisateurs">
+          <td>{{ user.nom }}</td>
+          <td>{{ user.prenom }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.tel }}</td>
+          <td>
+            <span [style.background-color]="getRoleColor(user.role)"
+                  style="color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+              {{ getRoleLabel(user.role) }}
+            </span>
+          </td>
+          <td>
+            <button nbButton status="warning" size="small" (click)="modifier(user._id)">
+              <nb-icon icon="edit-outline"></nb-icon> Modifier
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="utilisateurs.length === 0">
+          <td colspan="6" class="text-center">Aucun utilisateur trouvé</td>
+        </tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>
