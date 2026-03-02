@@ -6,8 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UtilisateurService {
-  private apiUrl = 'http://localhost:5000/user';  // ← corrige l'URL
-
+  
+  // private apiUrl = 'http://localhost:5000/user';  
+  private apiUrl = 'https://m1p13meanback-sarobidy-grace.onrender.com/user';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<any> {

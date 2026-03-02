@@ -5,7 +5,9 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
-  private readonly API = 'http://localhost:5000';
+  
+  // private readonly API = 'http://localhost:5000';
+  private readonly API = 'https://m1p13meanback-sarobidy-grace.onrender.com';
   private panierSubject = new BehaviorSubject<any[]>(this.loadPanier());
   panier$ = this.panierSubject.asObservable();
 
@@ -26,7 +28,7 @@ export class ClientService {
     return this.http.post(`${this.API}/user/login`, { email, mdp });
   }
   register(data: any): Observable<any> {
-    return this.http.post(`${this.API}/user/new`, { ...data, role: 3 });
+    return this.http.post(`${this.API}/user/nouveau`, { ...data, role: 3 });
   }
 
   // Panier local
@@ -89,8 +91,19 @@ export class ClientService {
       headers: { Authorization: `Bearer ${token}` }
     });
   }
+  getModesPaiement(idBoutique: string): Observable<any> {
+  return this.http.get(`${this.API}/paiement-modes/boutique/${idBoutique}`);
+}
+
+initierPaiement(data: any): Observable<any> {
+  return this.http.post(`${this.API}/paiements/initier`, data, {
+    headers: { Authorization: `Bearer ${this.getToken()}` }
+  });
+}
 
   isLoggedIn(): boolean { return !!localStorage.getItem('token') && localStorage.getItem('role') === '3'; }
   getToken(): string { return localStorage.getItem('token') || ''; }
   logout(): void { localStorage.removeItem('token'); localStorage.removeItem('role'); }
 }
+
+

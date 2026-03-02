@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ClientService } from '../client.service';
+import { PaiementModeService } from '../paiement/paiement-mode/paiement-mode.service';
 
 @Component({ selector: 'app-panier', templateUrl: './panier.component.html' })
 export class PanierComponent implements OnInit {
@@ -8,14 +9,25 @@ export class PanierComponent implements OnInit {
   total = 0;
   showLogin = false;
   showRegister = false;
+  showPaiement = false;
   loginData = { email: '', mdp: '' };
   registerData = { nom: '', prenom: '', email: '', mdp: '', tel: '' };
   loading = false;
   message = '';
   messageType = '';
   commandeSuccess = false;
+  idVenteCreee = '';
+  modesPaiement: any[] = [];
+  paiementData = {
+    idPaiementMode: '',
+    referenceTransaction: '',
+  };
 
-  constructor(public clientService: ClientService, private router: Router) {}
+  constructor(
+    public clientService: ClientService,
+    private router: Router,
+    private paiementModeService: PaiementModeService
+  ) {}
 
   ngOnInit(): void {
     this.clientService.panier$.subscribe(p => {
@@ -29,7 +41,9 @@ export class PanierComponent implements OnInit {
 
   commander(): void {
     if (this.panier.length === 0) return;
-    this.showLogin = true;
+    const token = this.clientService.getToken();
+    if (!token) { this.showLogin = true; return; }
+    this.passerCommande();
   }
 
   login(): void {
@@ -61,9 +75,47 @@ export class PanierComponent implements OnInit {
 
   passerCommande(): void {
     this.loading = true;
+    const idBoutique = this.panier[0]?.idBoutique;
+    console.log('panier[0]:', this.panier[0]);
+    console.log('idBoutique:', idBoutique);
     this.clientService.passerCommande(this.clientService.getToken()).subscribe({
-      next: () => { this.loading = false; this.commandeSuccess = true; this.clientService.viderPanier(); },
+      next: (res) => {
+        this.loading = false;
+        this.idVenteCreee = res.data._id;
+        this.clientService.viderPanier();
+        this.loadModesPaiement(idBoutique);
+        this.showPaiement = true;
+      },
       error: (err) => { this.message = err.error?.error || 'Erreur commande'; this.messageType = 'danger'; this.loading = false; },
+    });
+  }
+
+  loadModesPaiement(idBoutique: string): void {
+    if (!idBoutique) return;
+    this.paiementModeService.getByBoutique(idBoutique).subscribe({
+      next: (res) => {
+        console.log('modes paiement:', res);
+        this.modesPaiement = res.data;
+      },
+      error: (err) => console.error('Erreur chargement modes paiement', err),
+    });
+  }
+
+  soumettrePaiement(): void {
+    if (!this.paiementData.idPaiementMode || !this.paiementData.referenceTransaction) {
+      this.message = 'Veuillez remplir tous les champs';
+      this.messageType = 'danger';
+      return;
+    }
+    this.loading = true;
+    this.clientService.initierPaiement({
+      idVente: this.idVenteCreee,
+      idPaiementMode: this.paiementData.idPaiementMode,
+      montant: this.total,
+      referenceTransaction: this.paiementData.referenceTransaction,
+    }).subscribe({
+      next: () => { this.loading = false; this.showPaiement = false; this.commandeSuccess = true; },
+      error: (err) => { this.message = err.error?.error || 'Erreur paiement'; this.messageType = 'danger'; this.loading = false; },
     });
   }
 

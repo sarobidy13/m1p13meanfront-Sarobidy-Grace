@@ -8,8 +8,9 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:5000';
-
+  
+  // private readonly API_URL = 'http://localhost:5000';
+  private readonly API_URL ='https://m1p13meanback-sarobidy-grace.onrender.com';
   constructor(private http: HttpClient, private router: Router) {}
 
   login(email: string, mdp: string): Observable<any> {

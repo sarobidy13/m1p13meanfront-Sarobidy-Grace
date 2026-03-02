@@ -4,8 +4,10 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ContratService {
-  private readonly API_URL = 'http://localhost:5000/contrat';
+  // https://m1p13meanback-sarobidy-grace.onrender.com
 
+  // private readonly API_URL = 'http://localhost:5000/contrat';
+  private readonly API_URL = 'https://m1p13meanback-sarobidy-grace.onrender.com/contrat';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<any> { return this.http.get(`${this.API_URL}/`); }

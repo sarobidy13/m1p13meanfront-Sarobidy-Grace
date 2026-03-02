@@ -155,6 +155,76 @@
           </button>
         </div>
       </div>
+
+      <!-- Modal Paiement -->
+      <div *ngIf="showPaiement" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:1000;">
+        <div style="background:white;border-radius:20px;padding:40px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+          <div style="text-align:center;margin-bottom:24px;">
+            <div style="width:64px;height:64px;background:#f5f0e8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <span style="font-size:2rem;">💳</span>
+            </div>
+            <h4 style="color:#3a2010;margin:0 0 6px 0;font-size:1.3rem;font-weight:700;">Paiement</h4>
+            <p style="color:#8b8b89;margin:0;font-size:13px;">Montant à payer : <strong style="color:#8B4513;">{{ total | number }} Ar</strong></p>
+          </div>
+
+          <div *ngIf="message" style="background:#fff0f3;border:1px solid #ffb3c1;color:#c0392b;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:13px;">⚠ {{ message }}</div>
+
+          <!-- Modes de paiement -->
+          <div style="margin-bottom:16px;">
+            <label style="color:#3a2010;font-size:13px;font-weight:600;display:block;margin-bottom:8px;">Mode de paiement</label>
+            <div *ngFor="let mode of modesPaiement"
+                 (click)="paiementData.idPaiementMode = mode._id"
+                 [style.border]="paiementData.idPaiementMode === mode._id ? '2px solid #8B4513' : '1.5px solid #e0d8d0'"
+                 [style.background]="paiementData.idPaiementMode === mode._id ? '#fdf5ef' : '#fafaf8'"
+                 style="padding:12px 16px;border-radius:10px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+              <span style="font-size:1.3rem;">
+                {{ mode.type === 'mobile_money' ? '📱' : mode.type === 'virement' ? '🏦' : mode.type === 'carte' ? '💳' : '💵' }}
+              </span>
+              <div>
+                <p style="margin:0;color:#3a2010;font-weight:600;font-size:14px;">
+                  {{ mode.type === 'mobile_money' ? 'Mobile Money' : mode.type === 'virement' ? 'Virement' : mode.type === 'carte' ? 'Carte' : 'Espèce' }}
+                </p>
+                <ng-container *ngIf="mode.type === 'mobile_money'">
+                  <p style="margin:0;color:#8b8b89;font-size:12px;">{{ mode.details?.nomReseau }} - {{ mode.details?.numeroTelephone }}</p>
+                  <p style="margin:0;color:#8b8b89;font-size:12px;">{{ mode.details?.nomTitulaire }}</p>
+                </ng-container>
+                <ng-container *ngIf="mode.type === 'virement'">
+                  <p style="margin:0;color:#8b8b89;font-size:12px;">RIB: {{ mode.details?.rib }}</p>
+                  <p style="margin:0;color:#8b8b89;font-size:12px;">{{ mode.details?.nomTitulaire }}</p>
+                </ng-container>
+                <ng-container *ngIf="mode.type === 'carte'">
+                  <p style="margin:0;color:#8b8b89;font-size:12px;">{{ mode.details?.nomTitulaire }}</p>
+                  <p style="margin:0;color:#8b8b89;font-size:12px;">**** {{ mode.details?.numeroCarte?.slice(-4) }}</p>
+                </ng-container>
+                <ng-container *ngIf="mode.type === 'espece'">
+                  <p style="margin:0;color:#8b8b89;font-size:12px;">Paiement en espèce</p>
+                </ng-container>
+              </div>
+            </div>
+            <p *ngIf="modesPaiement.length === 0" style="color:#8b8b89;font-size:13px;text-align:center;">Aucun mode de paiement disponible</p>
+          </div>
+
+          <!-- Référence transaction -->
+          <div style="margin-bottom:24px;">
+            <label style="color:#3a2010;font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Référence de transaction</label>
+            <input [(ngModel)]="paiementData.referenceTransaction"
+                   placeholder="Ex: TXN123456789"
+                   style="width:100%;padding:12px 16px;border-radius:10px;border:1.5px solid #e0d8d0;background:#fafaf8;color:#3a2010;box-sizing:border-box;font-size:14px;">
+            <p style="color:#8b8b89;font-size:11px;margin:6px 0 0 0;">Entrez la référence reçue après votre transfert</p>
+          </div>
+
+          <button (click)="soumettrePaiement()" [disabled]="loading"
+                  style="width:100%;background:#8B4513;color:white;border:none;padding:14px;border-radius:10px;cursor:pointer;font-size:1rem;font-weight:700;margin-bottom:12px;"
+                  [style.opacity]="loading?'0.7':'1'">
+            {{ loading ? 'Traitement...' : '✓ Confirmer le paiement' }}
+          </button>
+          <button (click)="showPaiement=false;commandeSuccess=true"
+                  style="width:100%;background:#f5f5f0;color:#8b8b89;border:none;padding:12px;border-radius:10px;cursor:pointer;font-size:13px;">
+            Payer plus tard
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

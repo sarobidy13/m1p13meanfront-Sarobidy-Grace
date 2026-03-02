@@ -5,8 +5,9 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private readonly API = 'http://localhost:5000';
-
+ 
+  // private readonly API = 'http://localhost:5000';
+  private readonly API = ' https://m1p13meanback-sarobidy-grace.onrender.com';
   constructor(private http: HttpClient) {}
 
   // private getHeaders() {

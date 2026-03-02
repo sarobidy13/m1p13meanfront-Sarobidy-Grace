@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CategorieBoutiqueService {
-  private readonly API_URL = 'http://localhost:5000/categorieBoutique';
-
+  // private readonly API_URL = 'http://localhost:5000/categorieBoutique';
+  private readonly API_URL = 'https://m1p13meanback-sarobidy-grace.onrender.com/categorieBoutique';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<any> {

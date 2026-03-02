@@ -1,0 +1,71 @@
+<nb-card>
+  <nb-card-header>Ajouter un Mode de Paiement</nb-card-header>
+  <nb-card-body>
+
+    <!-- Type de paiement -->
+    <label class="label">Type de paiement</label>
+    <nb-select fullWidth placeholder="Choisir un type" [(ngModel)]="paiementMode.type" class="mb-3">
+      <nb-option value="espece">Espèce</nb-option>
+      <nb-option value="mobile_money">Mobile Money</nb-option>
+      <nb-option value="virement">Virement</nb-option>
+      <nb-option value="carte">Carte</nb-option>
+    </nb-select>
+
+    <!-- Mobile Money -->
+    <ng-container *ngIf="paiementMode.type === 'mobile_money'">
+      <nb-select fullWidth placeholder="Réseau" [(ngModel)]="paiementMode.details.nomReseau" class="mb-2">
+        <nb-option value="MVola">MVola</nb-option>
+        <nb-option value="Orange Money">Orange Money</nb-option>
+        <nb-option value="Airtel Money">Airtel Money</nb-option>
+      </nb-select>
+      <input
+        type="text" nbInput fullWidth
+        placeholder="Numéro de téléphone"
+        [(ngModel)]="paiementMode.details.numeroTelephone"
+        class="mb-2">
+      <input
+        type="text" nbInput fullWidth
+        placeholder="Nom du titulaire"
+        [(ngModel)]="paiementMode.details.nomTitulaire"
+        class="mb-2">
+    </ng-container>
+
+    <!-- Virement -->
+    <ng-container *ngIf="paiementMode.type === 'virement'">
+      <input
+        type="text" nbInput fullWidth
+        placeholder="RIB / IBAN"
+        [(ngModel)]="paiementMode.details.rib"
+        class="mb-2">
+      <input
+        type="text" nbInput fullWidth
+        placeholder="Nom du titulaire"
+        [(ngModel)]="paiementMode.details.nomTitulaire"
+        class="mb-2">
+    </ng-container>
+
+    <!-- Carte -->
+    <ng-container *ngIf="paiementMode.type === 'carte'">
+      <input
+        type="text" nbInput fullWidth
+        placeholder="Nom du titulaire"
+        [(ngModel)]="paiementMode.details.nomTitulaire"
+        class="mb-2">
+      <input
+        type="text" nbInput fullWidth
+        placeholder="Numéro de carte"
+        [(ngModel)]="paiementMode.details.numeroCarte"
+        class="mb-2">
+    </ng-container>
+
+    <!-- Espèce -->
+    <ng-container *ngIf="paiementMode.type === 'espece'">
+      <p class="text-hint">Aucune information supplémentaire requise.</p>
+    </ng-container>
+
+    <button nbButton status="primary" hero fullWidth (click)="submitPaiementMode()">
+      Ajouter le mode de paiement
+    </button>
+
+  </nb-card-body>
+</nb-card>
