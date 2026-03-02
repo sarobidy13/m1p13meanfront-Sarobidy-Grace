@@ -1,0 +1,55 @@
+<nb-layout-column>
+
+  <!-- ===== KPI CARDS ===== -->
+  <div class="row">
+
+    <div class="col-xl-3 col-md-6 col-sm-12" *ngFor="let card of kpiCards">
+      <nb-card class="kpi-card">
+        <nb-card-body>
+          <div class="kpi-content">
+            <div>
+              <div class="kpi-title">{{ card.title }}</div>
+              <div class="kpi-value">{{ card.value }}</div>
+            </div>
+            <nb-icon [icon]="card.icon" pack="eva"></nb-icon>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+  </div>
+
+  <!-- ===== SECOND ROW ===== -->
+  <div class="row mt-3">
+
+    <!-- Graphique -->
+    <div class="col-xl-8 col-md-12">
+      <nb-card>
+        <nb-card-header>Les boutiques performantes</nb-card-header>
+        <nb-card-body>
+          <div id="revenuChart" style="height: 300px; width: 100%;"></div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+    <!-- Derniers Loyers -->
+    <div class="col-xl-4 col-md-12">
+      <nb-card>
+        <nb-card-header>Derniers Loyers</nb-card-header>
+        <nb-list>
+          <nb-list-item *ngFor="let l of derniersLoyers">
+            <div>
+              {{ l.idContrat?.idBoutique?.nom }}
+              <div class="date">{{ l.mois }}/{{ l.annee }}</div>
+            </div>
+            <div class="montant">
+              {{ l.montant | number }} Ar
+            </div>
+          </nb-list-item>
+        </nb-list>
+      </nb-card>
+    </div>
+
+  </div>
+
+</nb-layout-column>

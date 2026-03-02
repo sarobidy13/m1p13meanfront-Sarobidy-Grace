@@ -9,6 +9,13 @@ const routes: Routes = [
     component: PagesComponent,
     children: [
       {
+  path: 'dashboard-admin',
+  canActivate: [RoleGuard],
+  data: { roles: [1] },
+  loadComponent: () => import('./dashboard/dashadmin/dashadmin.component')
+    .then(m => m.DashboardComponent),  // ← composant standalone
+},
+      {
         path: 'utilisateur',
         canActivate: [RoleGuard],
         data: { roles: [1] },
