@@ -4,10 +4,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/akveo/ngx-admin.git"
+    "url": "git+https://github.com/sarobidy13/Centre-commercial-P13.git"
   },
   "bugs": {
-    "url": "https://github.com/akveo/ngx-admin/issues"
+    "url": "https://github.com/sarobidy13/Centre-commercial-P13/issues"
   },
   "scripts": {
     "ng": "ng",
@@ -44,7 +44,7 @@
     "@nebular/eva-icons": "^13.0.0",
     "@nebular/security": "^13.0.0",
     "@nebular/theme": "^13.0.0",
-    "@swimlane/ngx-charts": "^20.0.0",  
+    "@swimlane/ngx-charts": "^20.0.0",
     "angular2-chartjs": "0.4.1",
     "bootstrap": "4.3.1",
     "chart.js": "2.7.1",
