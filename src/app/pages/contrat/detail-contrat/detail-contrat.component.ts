@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratService } from '../contrat.service';
 import { LoyerService } from '../../loyer/loyer.service';
+import { NbDialogService } from '@nebular/theme';
+import { ConfirmDialogComponent } from './confirm-dialog.component';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 (pdfMake as any).vfs = pdfFonts.vfs;
-
-
 
 @Component({
   selector: 'app-detail-contrat',
@@ -17,13 +17,14 @@ export class DetailContratComponent implements OnInit {
   loyers: any[] = [];
   loading = false;
   message = '';
-  messageType = '';
+  messageType: 'success' | 'danger' | 'warning' | 'info' | 'primary' | 'basic' | 'control' = 'success';
 
   constructor(
     private contratService: ContratService,
     private loyerService: LoyerService,
     private route: ActivatedRoute,
     private router: Router,
+    private dialogService: NbDialogService,
   ) {}
 
   ngOnInit(): void {
@@ -41,16 +42,24 @@ export class DetailContratComponent implements OnInit {
   }
 
   payer(idLoyer: string): void {
-    if (confirm('Confirmer le paiement de ce loyer ?')) {
-      this.loyerService.payer(idLoyer).subscribe({
-        next: () => {
-          this.message = 'Loyer marqué comme payé !';
-          this.messageType = 'success';
-          this.loadLoyers(this.contrat._id);
-        },
-        error: () => { this.message = 'Erreur'; this.messageType = 'danger'; },
-      });
-    }
+    const loyer = this.loyers.find(l => l._id === idLoyer);
+    const periode = loyer ? `${this.getNomMois(loyer.mois)} ${loyer.annee}` : '';
+    const montant = loyer ? `${loyer.montant?.toLocaleString()} Ar` : '';
+
+    this.dialogService.open(ConfirmDialogComponent, {
+      context: { periode, montant },
+    }).onClose.subscribe((confirme: boolean) => {
+      if (confirme) {
+        this.loyerService.payer(idLoyer).subscribe({
+          next: () => {
+            this.message = `Loyer de ${periode} marqué comme payé !`;
+            this.messageType = 'success';
+            this.loadLoyers(this.contrat._id);
+          },
+          error: () => { this.message = 'Erreur lors du paiement'; this.messageType = 'danger'; },
+        });
+      }
+    });
   }
 
   getStatusColor(status: string): string {
@@ -69,16 +78,11 @@ export class DetailContratComponent implements OnInit {
     return new Date(date).toLocaleDateString('fr-FR');
   }
 
-  async exporterPDF(): Promise<void> {
-    const pdfMake = await import('pdfmake/build/pdfmake');
-    const pdfFonts = await import('pdfmake/build/vfs_fonts');
-    (pdfMake as any).vfs = (pdfFonts as any).vfs;
-
+  exporterPDF(): void {
     const docDefinition: any = {
       pageSize: 'A4',
       pageMargins: [40, 60, 40, 60],
       content: [
-        // Header
         {
           columns: [
             { text: 'CityHub', style: 'header' },
@@ -87,8 +91,6 @@ export class DetailContratComponent implements OnInit {
         },
         { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 2, lineColor: '#8B4513' }] },
         { text: '\n' },
-
-        // Infos contrat
         {
           table: {
             widths: ['*', '*'],
@@ -107,8 +109,6 @@ export class DetailContratComponent implements OnInit {
           }
         },
         { text: '\n' },
-
-        // Tableau loyers
         { text: 'Suivi des Loyers', style: 'sectionTitle2', margin: [0, 0, 0, 8] },
         {
           table: {
@@ -136,8 +136,6 @@ export class DetailContratComponent implements OnInit {
           }
         },
         { text: '\n' },
-
-        // Résumé
         {
           columns: [
             { text: [{ text: 'Total payé : ', style: 'label' }, { text: `${this.loyers.filter(l => l.status === 'paye').reduce((s, l) => s + l.montant, 0).toLocaleString()} Ar`, style: 'valueGreen' }] },
@@ -145,8 +143,6 @@ export class DetailContratComponent implements OnInit {
           ]
         },
         { text: '\n\n\n' },
-
-        // Signatures
         { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 1, lineColor: '#8B4513' }] },
         { text: '\n' },
         {
@@ -157,7 +153,6 @@ export class DetailContratComponent implements OnInit {
         },
         { text: `Généré le ${new Date().toLocaleDateString('fr-FR')}`, style: 'footer', alignment: 'center', margin: [0, 20, 0, 0] }
       ],
-
       styles: {
         header: { fontSize: 16, bold: true, color: '#8B4513' },
         title: { fontSize: 14, bold: true, color: '#3b1f0f' },
