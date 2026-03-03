@@ -15,7 +15,7 @@ RUN npm install -g @angular/cli@15 && \
 COPY . .
 
 # Exposer le port utilisé par ng serve
-EXPOSE 4200
+EXPOSE ${PORT:-4200}
 
 # Lancer l'application
-CMD ["npx", "ng", "serve", "--host", "0.0.0.0"]
+CMD ["sh", "-c", "npx ng serve --host 0.0.0.0 --port ${PORT:-4200} --disable-host-check"]
