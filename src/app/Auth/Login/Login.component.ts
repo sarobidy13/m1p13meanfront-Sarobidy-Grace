@@ -5,7 +5,7 @@ import { ChangeDetectorRef, Inject } from '@angular/core';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
+  templateUrl: './Login.component.html',
 })
 export class LoginComponent extends NbLoginComponent {
   constructor(
