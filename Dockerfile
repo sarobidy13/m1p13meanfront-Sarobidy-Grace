@@ -1,16 +1,16 @@
 # Étape 1 : Builder avec Angular 15
 FROM node:18-alpine AS builder
 
-# Indiquer Angular CLI version 15 explicitement
-RUN npm install -g @angular/cli@15
-
 WORKDIR /app
+
+# Installer Angular CLI version 15
+RUN npm install -g @angular/cli@15
 
 # Copier package.json et package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances
-RUN npm install
+# Installer les dépendances avec legacy-peer-deps pour éviter les conflits
+RUN npm install --legacy-peer-deps
 
 # Copier le code source
 COPY . .
@@ -30,8 +30,8 @@ RUN npm install -g serve
 COPY --from=builder /app/dist /app/dist
 
 # Render définit automatiquement $PORT
-ENV PORT 10000
+ENV PORT=4200
 EXPOSE $PORT
 
 # Lancer le serveur sur le port fourni par Render
-CMD ["serve", "-s", "dist", "-l", "tcp://0.0.0.0:$PORT"]
+CMD ["sh", "-c", "serve -s /app/dist -l tcp://0.0.0.0:$PORT"]
