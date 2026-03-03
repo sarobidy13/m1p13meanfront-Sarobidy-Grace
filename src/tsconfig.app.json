@@ -1,15 +1,19 @@
 {
-  "skipLibCheck": true,
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "skipLibCheck": true
   },
   "files": [
     "main.ts",
     "polyfills.ts"
   ],
   "include": [
-    "**/*.d.ts"
+    "*/.d.ts"
+  ],
+  "exclude": [
+    "../node_modules/@nebular/theme/components/cdk/**",
+    "../node_modules/@types/jasmine/**"
   ]
 }
