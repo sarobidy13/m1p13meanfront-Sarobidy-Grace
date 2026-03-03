@@ -1,21 +1,32 @@
-# Utiliser Node.js stable (Node 20 fonctionne très bien)
-FROM node:20
-
-# Définir le dossier de travail dans le conteneur
+# --- ÉTAPE 1 : Build (La plus gourmande) ---
+FROM node:20-slim AS build
 WORKDIR /app
 
-# Copier les fichiers package.json et package-lock.json
+# Optimisation npm pour consommer moins de RAM
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
 COPY package*.json ./
 
-# Installer Angular CLI 15 globalement et les dépendances
-RUN npm install -g @angular/cli@15 && \
-    npm install --legacy-peer-deps
+# On installe uniquement le nécessaire et on évite les audits lourds
+RUN npm install --legacy-peer-deps --no-audit --no-fund
 
-# Copier le reste du projet
 COPY . .
 
-# Exposer le port utilisé par ng serve
-EXPOSE ${PORT:-4200}
+# Build de production (le nom du dossier de sortie est 'dist' selon ton angular.json)
+RUN ./node_modules/.bin/ng build --configuration production --subresource-integrity=false
 
-# Lancer l'application
-CMD ["sh", "-c", "npx ng serve --host 0.0.0.0 --port ${PORT:-4200} --disable-host-check"]
+# --- ÉTAPE 2 : Serveur léger (Celle qui tournera sur Render) ---
+FROM node:20-slim
+WORKDIR /app
+
+# Installation d'un serveur statique ultra-léger
+RUN npm install -g serve
+
+# On ne récupère QUE les fichiers compilés (quelques Mo au lieu de 1Go)
+COPY --from=build /app/dist .
+
+# Port dynamique pour Render
+EXPOSE 4200
+
+# Commande optimisée pour servir l'application statique
+CMD ["sh", "-c", "serve -s . -l ${PORT:-4200}"]
