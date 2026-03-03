@@ -53,7 +53,7 @@ export class ClientService {
         stockDispo: article.quantite,
         idBoutique: boutique._id,
         nomBoutique: boutique.nom,
-        image: article.image,
+        image: `${this.API}${article.image}`
       });
     }
     this.savePanier(panier);

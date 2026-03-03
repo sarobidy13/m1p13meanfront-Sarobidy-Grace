@@ -8,6 +8,10 @@ import { ChangeDetectorRef, Inject } from '@angular/core';
   templateUrl: './Login.component.html',
 })
 export class LoginComponent extends NbLoginComponent {
+  ngOnInit() {
+  this.user.email = 'Admin@gmail.com';
+  this.user.password = 'admin!';
+}
   constructor(
     authService: NbAuthService,
     @Inject(NB_AUTH_OPTIONS) options: {},

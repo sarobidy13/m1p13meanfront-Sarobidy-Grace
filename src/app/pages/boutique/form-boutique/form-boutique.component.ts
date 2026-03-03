@@ -50,15 +50,20 @@ export class FormBoutiqueComponent implements OnInit {
     });
   }
 
-  loadBoutique(): void {
-    this.boutiqueService.getById(this.boutiqueId).subscribe({
-      next: (res) => {
-        this.boutique = res.data;
-        this.boutique.idCategorie = res.data.idCategorie?._id;
-        if (res.data.logo) this.logoPreview = 'http://localhost:3000' + res.data.logo;
-      },
-    });
-  }
+ loadBoutique(): void {
+  this.boutiqueService.getById(this.boutiqueId).subscribe({
+    next: (res) => {
+      this.boutique = res.data;
+      this.boutique.idCategorie = res.data.idCategorie?._id;
+
+      if (res.data.dateFinLocation) {
+        this.boutique.dateFinLocation = res.data.dateFinLocation.substring(0, 10);
+      }
+
+      if (res.data.logo) this.logoPreview = 'http://localhost:3000' + res.data.logo;
+    },
+  });
+}
 
   onFileSelected(event: any): void {
     const file = event.target.files[0];

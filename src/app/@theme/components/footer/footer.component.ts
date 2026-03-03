@@ -17,7 +17,7 @@ import { Component } from '@angular/core';
         <span class="separator">|</span>
         <span class="name">
           <nb-icon icon="person-outline"></nb-icon>
-          ANDRIANISOA Grace Hariniana
+          ANDRIANISOA Hariniana Grace
         </span>
       </div>
       <div class="footer-right">
