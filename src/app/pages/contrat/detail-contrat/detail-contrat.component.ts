@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratService } from '../contrat.service';
 import { LoyerService } from '../../loyer/loyer.service';
-import * as pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-(pdfMake as any).vfs = pdfFonts.vfs;
+
 
 
 
@@ -70,8 +68,10 @@ export class DetailContratComponent implements OnInit {
   }
 
   async exporterPDF(): Promise<void> {
-    const pdfMake = await import('pdfmake/build/pdfmake');
-    const pdfFonts = await import('pdfmake/build/vfs_fonts');
+    const pdfMakeModule = await import('pdfmake/build/pdfmake');
+    const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
+    const pdfMake = pdfMakeModule.default || pdfMakeModule;
+    const pdfFonts = pdfFontsModule.default || pdfFontsModule;
     (pdfMake as any).vfs = (pdfFonts as any).vfs;
 
     const docDefinition: any = {
@@ -175,7 +175,7 @@ export class DetailContratComponent implements OnInit {
       }
     };
 
-    (pdfMake as any).createPdf(docDefinition).download(`Contrat_${this.contrat.idBoutique?.nom}_${this.formatDate(this.contrat.dateDebut)}.pdf`);
+    (pdfMakeModule as any).createPdf(docDefinition).download(`Contrat_${this.contrat.idBoutique?.nom}_${this.formatDate(this.contrat.dateDebut)}.pdf`);
   }
 
   retour(): void { this.router.navigate(['/pages/contrat']); }
