@@ -1,32 +1,37 @@
-# --- ÉTAPE 1 : Build (La plus gourmande) ---
-FROM node:20-slim AS build
+# Étape 1 : Builder avec Angular 15
+FROM node:18-alpine AS builder
+
+# Indiquer Angular CLI version 15 explicitement
+RUN npm install -g @angular/cli@15
+
 WORKDIR /app
 
-# Optimisation npm pour consommer moins de RAM
-ENV NODE_OPTIONS="--max-old-space-size=2048"
-
+# Copier package.json et package-lock.json
 COPY package*.json ./
 
-# On installe uniquement le nécessaire et on évite les audits lourds
-RUN npm install --legacy-peer-deps --no-audit --no-fund
+# Installer les dépendances
+RUN npm install
 
+# Copier le code source
 COPY . .
 
-# Build de production (le nom du dossier de sortie est 'dist' selon ton angular.json)
-RUN ./node_modules/.bin/ng build --configuration production --subresource-integrity=false
+# Build Angular 15 en production
+RUN ng build --configuration production
 
-# --- ÉTAPE 2 : Serveur léger (Celle qui tournera sur Render) ---
-FROM node:20-slim
+# Étape 2 : Serveur léger pour les fichiers statiques
+FROM node:18-alpine
+
 WORKDIR /app
 
-# Installation d'un serveur statique ultra-léger
+# Installer serve pour servir le build
 RUN npm install -g serve
 
-# On ne récupère QUE les fichiers compilés (quelques Mo au lieu de 1Go)
-COPY --from=build /app/dist .
+# Copier le build depuis l'étape builder
+COPY --from=builder /app/dist /app/dist
 
-# Port dynamique pour Render
-EXPOSE 4200
+# Render définit automatiquement $PORT
+ENV PORT 10000
+EXPOSE $PORT
 
-# Commande optimisée pour servir l'application statique
-CMD ["sh", "-c", "serve -s . -l ${PORT:-4200}"]
+# Lancer le serveur sur le port fourni par Render
+CMD ["serve", "-s", "dist", "-l", "tcp://0.0.0.0:$PORT"]
