@@ -1,6 +1,9 @@
 <nb-auth-block>
   <h1 id="title" class="title">Login</h1>
   <p class="sub-title">Hello! Log in with your email.</p>
+  <section class="another-action" aria-label="Accueil">
+  <a class="text-link" routerLink="/">← Retour à l'accueil</a>
+</section>
 
   <nb-alert *ngIf="showMessages.error && errors?.length && !submitted" outline="danger" role="alert">
     <p class="alert-title"><b>Oh snap!</b></p>
