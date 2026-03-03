@@ -22,6 +22,7 @@ WORKDIR /app
 
 RUN npm install -g serve
 
+
 COPY --from=builder /app/dist /app/dist
 
 ENV PORT=4200
