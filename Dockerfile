@@ -9,9 +9,8 @@ COPY package*.json ./
 
 # Installer les dépendances
 RUN npm install --legacy-peer-deps
-
-# Installer nebular-icons manquant
 RUN npm install nebular-icons --legacy-peer-deps
+RUN npm install @types/tinymce --legacy-peer-deps
 
 COPY . .
 
