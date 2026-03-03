@@ -7,13 +7,15 @@ RUN npm install -g @angular/cli@17
 
 COPY package*.json ./
 
+# Installer les dépendances
 RUN npm install --legacy-peer-deps
+
+# Installer nebular-icons manquant
 RUN npm install nebular-icons --legacy-peer-deps
 
 COPY . .
 
-# Ajout de skipLibCheck via le flag TS
-RUN ng build --configuration production -- --no-progress
+RUN ng build --configuration production
 
 # Étape 2 : Serveur léger
 FROM node:18-alpine
