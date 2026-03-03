@@ -36,7 +36,6 @@ export class DashboardComponent implements OnInit {
     // Revenus mensuels
     this.dashService.getRevenuMensuel().subscribe({
       next: (res) => {
-        console.log('revenu mensuel:', res);
         this.kpiCards[0].value = `${res.data.revenuTotal?.toLocaleString()} Ar`;
       },
       error: (err) => {
@@ -48,7 +47,6 @@ export class DashboardComponent implements OnInit {
     // Total boutiques ← corrigé
     this.dashService.getTotalBoutiques().subscribe({
       next: (res) => {
-        console.log('total boutiques:', res);
         this.kpiCards[1].value = res.data.total;
       },
       error: (err) => {
@@ -60,7 +58,6 @@ export class DashboardComponent implements OnInit {
     // Contrats actifs
     this.dashService.getTotalContratsActifs().subscribe({
       next: (res) => {
-        console.log('contrats actifs:', res);
         this.kpiCards[2].value = res.data.total;
       },
       error: (err) => {
@@ -72,7 +69,6 @@ export class DashboardComponent implements OnInit {
     // Loyers payés
     this.dashService.getDerniersLoyers().subscribe({
       next: (res) => {
-        console.log('loyers payés:', res);
         this.kpiCards[3].value = res.data.nombreLoyers ?? res.data.length;
       },
       error: (err) => {
@@ -85,7 +81,6 @@ export class DashboardComponent implements OnInit {
   loadDerniersLoyers(): void {
     this.dashService.getDerniersLoyers().subscribe({
       next: (res) => {
-        console.log('loyers liste:', res);
         this.derniersLoyers = res.data;
       },
       error: (err) => console.error('Erreur chargement loyers:', err),
@@ -95,7 +90,6 @@ export class DashboardComponent implements OnInit {
   loadTopBoutiques(): void {
     this.dashService.getTopBoutiques().subscribe({
       next: (res) => {
-        console.log('top boutiques:', res);
         this.topBoutiques = res.data;
         this.initChart();
       },

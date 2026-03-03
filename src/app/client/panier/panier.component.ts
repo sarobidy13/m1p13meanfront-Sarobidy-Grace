@@ -76,8 +76,6 @@ export class PanierComponent implements OnInit {
   passerCommande(): void {
     this.loading = true;
     const idBoutique = this.panier[0]?.idBoutique;
-    console.log('panier[0]:', this.panier[0]);
-    console.log('idBoutique:', idBoutique);
     this.clientService.passerCommande(this.clientService.getToken()).subscribe({
       next: (res) => {
         this.loading = false;
@@ -94,7 +92,6 @@ export class PanierComponent implements OnInit {
     if (!idBoutique) return;
     this.paiementModeService.getByBoutique(idBoutique).subscribe({
       next: (res) => {
-        console.log('modes paiement:', res);
         this.modesPaiement = res.data;
       },
       error: (err) => console.error('Erreur chargement modes paiement', err),

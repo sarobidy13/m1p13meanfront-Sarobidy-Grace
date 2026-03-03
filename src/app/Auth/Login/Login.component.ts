@@ -18,10 +18,8 @@ export class LoginComponent extends NbLoginComponent {
   }
 
   login(): void {
-    console.log('login called');
     const email = (this as any).user?.email;
     const mdp = (this as any).user?.password;
-    console.log('Email:', email, 'Mdp:', mdp);
 
     if (!email || !mdp) {
       this.errors = ['Veuillez remplir tous les champs'];
@@ -37,7 +35,6 @@ export class LoginComponent extends NbLoginComponent {
     })
       .then(res => res.json())
       .then(data => {
-        console.log('Response backend:', data);
         if (data.token) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('role', String(data.role));
@@ -46,7 +43,6 @@ export class LoginComponent extends NbLoginComponent {
           localStorage.setItem('user', JSON.stringify(data.user));
 
           const role = Number(data.role);
-          console.log('Role:', role);
 
           if (role === 1) {
             this.myRouter.navigate(['/pages/boutique']);

@@ -17,9 +17,6 @@ export class RoleGuard implements CanActivate {
   const role = Number(roleStr);
   const allowedRoles: number[] = route.data['roles'];
 
-  console.log('role:', role);
-  console.log('allowedRoles:', allowedRoles);
-  console.log('includes:', allowedRoles?.includes(role));
 
   // Pas de restriction de rôle sur cette route
   if (!allowedRoles || allowedRoles.length === 0) {

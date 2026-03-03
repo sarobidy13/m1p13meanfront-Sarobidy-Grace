@@ -47,8 +47,6 @@ export class FormArticleComponent implements OnInit {
   }
 
   save(): void {
-    // Vérification avant tout
-    console.log('Article avant save:', this.article);
 
     this.loading = true;
     if (this.selectedFile) {
@@ -57,7 +55,6 @@ export class FormArticleComponent implements OnInit {
       this.articleService.uploadImage(formData).subscribe({
         next: (res) => {
           this.article.image = res.url;
-          console.log('Article après upload:', this.article); // ← vérifiez ici
           this.saveArticle();
         },
         error: () => {

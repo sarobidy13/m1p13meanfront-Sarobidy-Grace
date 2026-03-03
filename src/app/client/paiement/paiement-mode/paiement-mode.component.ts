@@ -41,10 +41,10 @@ export class PaiementModeFormComponent {
 
   constructor(private paiementModeService: PaiementModeService) {}
 
-  submitPaiementMode() {
-    this.paiementModeService.add(this.paiementMode).subscribe({
-      next: (res) => console.log('Mode ajouté', res),
-      error: (err) => console.error(err),
-    });
-  }
+ submitPaiementMode() {
+  this.paiementModeService.add(this.paiementMode).subscribe({
+    next: () => {},
+    error: (err) => console.error(err),
+  });
+}
 }

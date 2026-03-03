@@ -44,7 +44,6 @@ export class FormUtilisateurComponent implements OnInit {
   loadBoutiques(): void {
   this.boutiqueService.getAll().subscribe({
     next: (res) => {
-      console.log('boutiques:', res);  
       this.boutiques = res.data;
     },
     error: (err) => console.error('Erreur chargement boutiques', err),
@@ -52,8 +51,6 @@ export class FormUtilisateurComponent implements OnInit {
 }
 
 onRoleChange(role: any): void {
-  console.log('role valeur:', role);
-  console.log('role type:', typeof role);
 }
   loadUser(): void {
     this.utilisateurService.getById(this.userId).subscribe({
