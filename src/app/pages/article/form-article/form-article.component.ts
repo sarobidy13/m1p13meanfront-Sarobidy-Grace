@@ -31,7 +31,7 @@ export class FormArticleComponent implements OnInit {
         next: (res) => {
           this.article = res.data;
           this.article.idBoutique = res.data.idBoutique?._id;
-          if (res.data.image) this.imagePreview = 'http://localhost:5000' + res.data.image;
+          if (res.data.image) this.imagePreview = 'https://m1p13meanback-sarobidy-grace.onrender.com' + res.data.image;
         },
       });
     }

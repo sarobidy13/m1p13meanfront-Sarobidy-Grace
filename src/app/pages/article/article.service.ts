@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ArticleService {
-  private readonly API = 'http://localhost:5000/article';
+  private readonly API = 'https://m1p13meanback-sarobidy-grace.onrender.com/article';
   constructor(private http: HttpClient) {}
   getAll(idBoutique?: string): Observable<any> {
     return this.http.get(`${this.API}/${idBoutique ? '?idBoutique=' + idBoutique : ''}`);

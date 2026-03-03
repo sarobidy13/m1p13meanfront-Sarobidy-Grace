@@ -30,7 +30,7 @@ export class LoginComponent extends NbLoginComponent {
       return;
     }
 
-    fetch('https://m1p13meanback-sarobidy-grace.onrender.com', {
+    fetch('https://m1p13meanback-sarobidy-grace.onrender.com/user/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, mdp }),

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class StockService {
-  private readonly API_ARTICLE = 'http://localhost:5000/article';
+  private readonly API_ARTICLE = 'https://m1p13meanback-sarobidy-grace.onrender.com/article';
 
   constructor(private http: HttpClient) {}
 

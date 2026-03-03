@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LoyerService {
-  private readonly API_URL = 'http://localhost:5000/loyer';
+  private readonly API_URL = 'https://m1p13meanback-sarobidy-grace.onrender.com/loyer';
 
   constructor(private http: HttpClient) {}
 
