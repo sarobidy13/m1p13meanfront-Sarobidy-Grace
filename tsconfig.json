@@ -1,7 +1,7 @@
 {
-  "skipLibCheck": true,
   "compileOnSave": false,
   "compilerOptions": {
+    "skipLibCheck": true,
     "importHelpers": true,
     "module": "es2020",
     "outDir": "./dist/out-tsc",
@@ -16,11 +16,6 @@
     "lib": [
       "es2017",
       "dom"
-    ],
-    "plugins": [
-      {
-        "name": "tslint-language-service"
-      }
     ],
     "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true
