@@ -67,18 +67,19 @@ export class DetailContratComponent implements OnInit {
     return new Date(date).toLocaleDateString('fr-FR');
   }
 
-  async exporterPDF(): Promise<void> {
+   async exporterPDF(): Promise<void> {
     const pdfMakeModule = await import('pdfmake/build/pdfmake');
     const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
     const pdfMake = pdfMakeModule.default || pdfMakeModule;
     const pdfFonts = pdfFontsModule.default || pdfFontsModule;
     (pdfMake as any).vfs = (pdfFonts as any).vfs;
 
+    const formatMontant = (n: number) => n?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') || '0';
+
     const docDefinition: any = {
       pageSize: 'A4',
       pageMargins: [40, 60, 40, 60],
       content: [
-        // Header
         {
           columns: [
             { text: 'CityHub', style: 'header' },
@@ -88,18 +89,17 @@ export class DetailContratComponent implements OnInit {
         { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 2, lineColor: '#8B4513' }] },
         { text: '\n' },
 
-        // Infos contrat
         {
           table: {
             widths: ['*', '*'],
             body: [
               [{ text: 'Informations du Contrat', style: 'sectionTitle', colSpan: 2, alignment: 'center' }, {}],
               [{ text: 'Boutique :', style: 'label' }, { text: this.contrat.idBoutique?.nom || '—', style: 'value' }],
-              [{ text: 'Date de début :', style: 'label' }, { text: this.formatDate(this.contrat.dateDebut), style: 'value' }],
+              [{ text: 'Date de debut :', style: 'label' }, { text: this.formatDate(this.contrat.dateDebut), style: 'value' }],
               [{ text: 'Date de fin :', style: 'label' }, { text: this.formatDate(this.contrat.dateFin), style: 'value' }],
-              [{ text: 'Montant mensuel :', style: 'label' }, { text: `${this.contrat.montantMensuel?.toLocaleString()} Ar`, style: 'valueBold' }],
+              [{ text: 'Montant mensuel :', style: 'label' }, { text: `${formatMontant(this.contrat.montantMensuel)} Ar`, style: 'valueBold' }],
               [{ text: 'Status :', style: 'label' }, { text: this.contrat.status?.toUpperCase(), style: 'value' }],
-              [{ text: 'Date de création :', style: 'label' }, { text: this.formatDate(this.contrat.createdAt), style: 'value' }],
+              [{ text: 'Date de creation :', style: 'label' }, { text: this.formatDate(this.contrat.createdAt), style: 'value' }],
             ]
           },
           layout: {
@@ -108,7 +108,6 @@ export class DetailContratComponent implements OnInit {
         },
         { text: '\n' },
 
-        // Tableau loyers
         { text: 'Suivi des Loyers', style: 'sectionTitle2', margin: [0, 0, 0, 8] },
         {
           table: {
@@ -116,17 +115,17 @@ export class DetailContratComponent implements OnInit {
             widths: ['*', '*', '*', '*', '*'],
             body: [
               [
-                { text: 'Période', style: 'tableHeader' },
+                { text: 'Periode', style: 'tableHeader' },
                 { text: 'Montant', style: 'tableHeader' },
-                { text: 'Échéance', style: 'tableHeader' },
+                { text: 'Echeance', style: 'tableHeader' },
                 { text: 'Date Paiement', style: 'tableHeader' },
                 { text: 'Status', style: 'tableHeader' },
               ],
               ...this.loyers.map(l => [
                 { text: `${this.getNomMois(l.mois)} ${l.annee}`, style: 'tableCell' },
-                { text: `${l.montant?.toLocaleString()} Ar`, style: 'tableCell' },
+                { text: `${formatMontant(l.montant)} Ar`, style: 'tableCell' },
                 { text: this.formatDate(l.dateEcheance), style: 'tableCell' },
-                { text: l.datePaiement ? this.formatDate(l.datePaiement) : '—', style: 'tableCell' },
+                { text: l.datePaiement ? this.formatDate(l.datePaiement) : '-', style: 'tableCell' },
                 { text: l.status?.toUpperCase(), style: 'tableCell', color: l.status === 'paye' ? '#00b887' : l.status === 'en_retard' ? '#ff3d71' : '#ffaa00' },
               ])
             ]
@@ -137,25 +136,23 @@ export class DetailContratComponent implements OnInit {
         },
         { text: '\n' },
 
-        // Résumé
         {
           columns: [
-            { text: [{ text: 'Total payé : ', style: 'label' }, { text: `${this.loyers.filter(l => l.status === 'paye').reduce((s, l) => s + l.montant, 0).toLocaleString()} Ar`, style: 'valueGreen' }] },
-            { text: [{ text: 'Total impayé : ', style: 'label' }, { text: `${this.loyers.filter(l => l.status !== 'paye').reduce((s, l) => s + l.montant, 0).toLocaleString()} Ar`, style: 'valueRed' }] }
+            { text: [{ text: 'Total paye : ', style: 'label' }, { text: `${formatMontant(this.loyers.filter(l => l.status === 'paye').reduce((s, l) => s + l.montant, 0))} Ar`, style: 'valueGreen' }] },
+            { text: [{ text: 'Total impaye : ', style: 'label' }, { text: `${formatMontant(this.loyers.filter(l => l.status !== 'paye').reduce((s, l) => s + l.montant, 0))} Ar`, style: 'valueRed' }] }
           ]
         },
         { text: '\n\n\n' },
 
-        // Signatures
         { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 1, lineColor: '#8B4513' }] },
         { text: '\n' },
         {
           columns: [
-            { text: 'Signature Gérant\n\n\n___________________', alignment: 'center', style: 'signature' },
+            { text: 'Signature Gerant\n\n\n___________________', alignment: 'center', style: 'signature' },
             { text: 'Signature Admin\n\n\n___________________', alignment: 'center', style: 'signature' },
           ]
         },
-        { text: `Généré le ${new Date().toLocaleDateString('fr-FR')}`, style: 'footer', alignment: 'center', margin: [0, 20, 0, 0] }
+        { text: `Genere le ${new Date().toLocaleDateString('fr-FR')}`, style: 'footer', alignment: 'center', margin: [0, 20, 0, 0] }
       ],
 
       styles: {
@@ -175,7 +172,7 @@ export class DetailContratComponent implements OnInit {
       }
     };
 
-    (pdfMakeModule as any).createPdf(docDefinition).download(`Contrat_${this.contrat.idBoutique?.nom}_${this.formatDate(this.contrat.dateDebut)}.pdf`);
+    (pdfMake as any).createPdf(docDefinition).download(`Contrat_${this.contrat.idBoutique?.nom}_${this.formatDate(this.contrat.dateDebut)}.pdf`);
   }
 
   retour(): void { this.router.navigate(['/pages/contrat']); }
